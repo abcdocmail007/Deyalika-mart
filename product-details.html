@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details | DecoTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <style>
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #f8faf9; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
+        .container { max-width: 1000px; margin: 60px auto; padding: 20px; display: flex; gap: 50px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .product-image { flex: 1; }
+        .product-image img { width: 100%; border-radius: 15px; transition: 0.5s; }
+        .product-info { flex: 1; display: flex; flexDirection: column; justify-content: center; }
+        .product-info h1 { color: var(--primary); margin-bottom: 10px; }
+        .price { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
+        .desc { color: #666; line-height: 1.6; margin-bottom: 30px; }
+        .add-cart-btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: 600; transition: 0.3s; }
+        .add-cart-btn:hover { background: #00332a; transform: scale(1.05); }
+        @media (max-width: 768px) { .container { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="container reveal">
+        <div class="product-image" id="pImage"></div>
+        <div class="product-info" id="pDetails">
+            </div>
+    </div>
+
+    <script>
+        async function loadDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const res = await fetch(`http://localhost:5000/api/products/${id}`);
+            const p = await res.json();
+
+            document.getElementById('pImage').innerHTML = `<img src="${p.image}" class="reveal-left">`;
+            document.getElementById('pDetails').innerHTML = `
+                <h1 class="reveal-right">${p.name}</h1>
+                <p class="price">৳ ${p.price}</p>
+                <p class="desc">${p.description || "Premium quality product from DecoTech."}</p>
+                <button class="add-cart-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+            `;
+            ScrollReveal().reveal('.reveal-left', { origin: 'left', distance: '50px', duration: 1000 });
+            ScrollReveal().reveal('.reveal-right', { origin: 'right', distance: '50px', duration: 1000 });
+        }
+        loadDetails();
+    </script>
+</body>
+</html>

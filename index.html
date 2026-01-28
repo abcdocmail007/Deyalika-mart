@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DecoTech | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Common Styles */
+        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f4f4; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); }
+        
+        /* Navbar */
+        nav { background: white; padding: 15px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
+        .logo span { color: var(--accent); }
+        .menu { display: flex; gap: 20px; }
+        .menu a { text-decoration: none; color: #333; font-weight: 500; }
+        .search-box { flex-grow: 1; margin: 0 30px; position: relative; }
+        .search-box input { width: 100%; padding: 8px 15px; border-radius: 20px; border: 1px solid #ddd; }
+        
+        /* Banner */
+        .hero { height: 400px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+        
+        /* Product Card */
+        .container { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 25px; padding: 0 20px; }
+        .card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; padding-bottom: 15px; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<nav style="background: #ffffff; padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; font-family: 'Poppins', sans-serif;">
+    
+    <a href="index.html" style="text-decoration: none; font-size: 26px; font-weight: 700; color: #004d40;">
+        Deco<span style="color: #ff9800;">Tech</span>
+    </a>
+
+    <div style="display: flex; gap: 20px;">
+        <a href="index.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Home</a>
+        <a href="shop.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Shop</a>
+        <a href="gadgets.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Gadgets</a>
+        <a href="decor.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Decor</a>
+        <a href="clothing.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Clothing</a>
+        <a href="about.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">About Us</a>
+        <a href="contact.html" style="text-decoration: none; color: #333; font-weight: 500; font-size: 15px;">Contact</a>
+    </div>
+
+    <div style="position: relative; width: 250px;">
+        <input type="text" placeholder="Search products..." style="width: 100%; padding: 8px 35px 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; font-size: 14px;">
+        <i class="fa fa-search" style="position: absolute; right: 12px; top: 10px; color: #888;"></i>
+    </div>
+
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <a href="login.html" style="color: #004d40; font-size: 20px;"><i class="fa fa-user"></i></a>
+        <div style="position: relative; cursor: pointer;">
+            <a href="cart.html" style="color: #004d40; font-size: 20px; text-decoration: none;">
+                <i class="fa fa-shopping-cart"></i>
+                <span id="cartCount" style="position: absolute; top: -10px; right: -10px; background: #ff9800; color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold;">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="hero">
+    <div>
+        <h1>Innovate Your Living Space</h1>
+        <p>Premium Gadgets & Decor</p>
+    </div>
+</div>
+
+<h2 style="text-align:center; margin-top:40px;">Featured Products</h2>
+<div class="container" id="productList"></div>
+
+<!-- Coustomer Reviw -->
+ <section style="max-width: 1000px; margin: 60px auto; padding: 20px;">
+    <h2 style="text-align: center; color: #004d40;">Customer Reviews</h2>
+    
+    <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 30px;">
+        <h4>Leave a Review</h4>
+        <input type="text" id="revName" placeholder="Your Name" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;">
+        <textarea id="revText" placeholder="Your Feedback" style="width: 100%; padding: 10px; height: 80px; border-radius: 5px; border: 1px solid #ddd;"></textarea>
+        <button onclick="addReview()" style="background: #ff9800; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Post Review</button>
+    </div>
+
+    <div id="reviewList" style="display: grid; gap: 15px;">
+        </div>
+</section>
+
+<script>
+    function addReview() {
+        const name = document.getElementById('revName').value;
+        const text = document.getElementById('revText').value;
+        
+        if(name && text) {
+            const list = document.getElementById('reviewList');
+            const newReview = `
+                <div style="background: #fff; padding: 15px; border-left: 5px solid #ff9800; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <strong style="color: #004d40;">${name}</strong>
+                    <p style="margin: 5px 0; font-size: 14px; color: #555;">"${text}"</p>
+                </div>
+            `;
+            list.innerHTML = newReview + list.innerHTML;
+            document.getElementById('revName').value = '';
+            document.getElementById('revText').value = '';
+        } else {
+            alert("Please fill both name and feedback!");
+        }
+    }
+</script>
+
+<footer style="background: #004d40; color: white; padding: 50px 10% 20px; margin-top: 50px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px;">
+        
+        <div>
+            <h2 style="color: #ff9800;">Deco<span>Tech</span></h2>
+            <p style="opacity: 0.8; line-height: 1.6;">Innovate your space with our premium gadgets and decor. Quality and trust are our priorities.</p>
+        </div>
+
+        <div>
+            <h4>Quick Links</h4>
+            <ul style="list-style: none; padding: 0; opacity: 0.8;">
+                <li><a href="about.html" style="color: white; text-decoration: none;">About Us</a></li>
+                <li><a href="contact.html" style="color: white; text-decoration: none;">Contact</a></li>
+                <li><a href="shop.html" style="color: white; text-decoration: none;">Shop</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <h4>Follow Us</h4>
+            <div style="display: flex; gap: 15px; font-size: 24px;">
+                <a href="#" style="color: white;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color: white;"><i class="fab fa-instagram"></i></a>
+                <a href="#" style="color: white;"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 14px; opacity: 0.6;">
+        &copy; 2026 DecoTech. All Rights Reserved.
+    </div>
+</footer>
+
+<script>
+    async function fetchProducts() {
+        const res = await fetch('http://localhost:5000/api/products');
+        const products = await res.json();
+        const list = document.getElementById('productList');
+        list.innerHTML = products.slice(0, 4).map(p => `
+            <div class="card">
+                <img src="${p.image}">
+                <h3>${p.name}</h3>
+                <p>৳ ${p.price}</p>
+                <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+            </div>
+        `).join('');
+    }
+
+    function addToCart(name, price) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        cart.push({name, price});
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        alert("Added to cart!");
+    }
+
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        document.getElementById('cartCount').innerText = cart.length;
+    }
+
+    fetchProducts();
+    updateCartCount();
+</script>
+</body>
+</html>

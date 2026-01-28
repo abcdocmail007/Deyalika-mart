@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | DecoTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #f0f2f5; }
+        body { 
+            font-family: 'Poppins', 'Hind Siliguri', sans-serif; 
+            margin: 0; background: var(--bg); 
+            display: flex; align-items: center; justify-content: center; height: 100vh;
+        }
+
+        .login-card {
+            background: white; padding: 40px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px;
+            text-align: center;
+        }
+        .login-card h2 { color: var(--primary); margin-bottom: 30px; }
+        .login-card h2 span { color: var(--accent); }
+
+        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
+        .input-group i { position: absolute; left: 15px; top: 40px; color: #888; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+        .input-group input { 
+            width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #ddd; 
+            border-radius: 8px; outline: none; box-sizing: border-box;
+        }
+        .input-group input:focus { border-color: var(--primary); }
+
+        .login-btn { 
+            width: 100%; background: var(--primary); color: white; border: none; 
+            padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; 
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .login-btn:hover { background: #00332a; transform: translateY(-2px); }
+
+        .back-home { display: inline-block; margin-top: 20px; color: #666; text-decoration: none; font-size: 14px; }
+        .back-home:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div style="font-size: 50px; color: var(--primary); margin-bottom: 10px;">
+            <i class="fas fa-user-shield"></i>
+        </div>
+        <h2>Deco<span>Tech</span> Admin</h2>
+        
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Admin Email</label>
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" placeholder="admin@decotech.com" required>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
+        </form>
+
+        <a href="index.html" class="back-home"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple demo login (Actual login backend theke hobe)
+            if(email === "admin@decotech.com" && password === "123456") {
+                alert("Login Successful!");
+                window.location.href = "admin-dashboard.html"; // Dashboard-e niye jabe
+            } else {
+                alert("Invalid Credentials!");
+            }
+        };
+    </script>
+</body>
+</html>

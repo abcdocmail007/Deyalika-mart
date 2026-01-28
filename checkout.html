@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | DecoTech</title>
+    <link rel="stylesheet" href="style.css"> <style>
+        .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .order-btn { width: 100%; background: #004d40; color: white; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .order-btn:hover { background: #00332a; }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <h2>আপনার অর্ডার ডিটেইলস দিন</h2>
+        <form id="checkoutForm">
+            <div class="form-group">
+                <label>আপনার নাম</label>
+                <input type="text" id="custName" placeholder="উদা: এলিয়াস হোসেন" required>
+            </div>
+            <div class="form-group">
+                <label>মোবাইল নম্বর</label>
+                <input type="text" id="custPhone" placeholder="017XXXXXXXX" required>
+            </div>
+            <div class="form-group">
+                <label>পুরো ঠিকানা</label>
+                <textarea id="custAddress" rows="3" placeholder="গ্রাম, থানা, জেলা" required></textarea>
+            </div>
+            <div id="orderSummary" style="margin-bottom: 20px; border-top: 1px solid #eee; padding-top: 10px;">
+                </div>
+            <button type="submit" class="order-btn">অর্ডার কনফার্ম করুন (WhatsApp)</button>
+        </form>
+    </div>
+
+    <script>
+        // LocalStorage theke Cart data ana
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        // Total calculate kora
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        // Summary dekhano
+        document.getElementById('orderSummary').innerHTML = `<strong>মোট বিল: ৳${calculateTotal()}</strong>`;
+
+        // Form Submit Logic
+        document.getElementById('checkoutForm').onsubmit = async (e) => {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                alert("আপনার কার্ট খালি!");
+                return;
+            }
+
+            const orderData = {
+                customerName: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value,
+                products: cart,
+                totalAmount: calculateTotal()
+            };
+
+            try {
+                // ১. ডাটাবেসে সেভ করা
+                const response = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (response.ok) {
+                    // ২. ডাটাবেসে সেভ সফল হলে হোয়াটসঅ্যাপে পাঠানো
+                    sendWhatsAppMessage(orderData);
+                } else {
+                    alert("অর্ডার সেভ করতে সমস্যা হয়েছে। সার্ভার চেক করুন।");
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                alert("সার্ভার কানেক্ট করা যাচ্ছে না!");
+            }
+        };
+
+        function sendWhatsAppMessage(data) {
+            const myNumber = "88017XXXXXXXX"; // <--- আপনার নম্বরটি এখানে দিন
+
+            let productText = "";
+            data.products.forEach(p => {
+                productText += `- ${p.name} (Qty: ${p.quantity})%0A`;
+            });
+
+            const text = `*নতুন অর্ডার (DecoTech)*%0A%0A` +
+                         `*নাম:* ${data.customerName}%0A` +
+                         `*ফোন:* ${data.phone}%0A` +
+                         `*ঠিকানা:* ${data.address}%0A%0A` +
+                         `*পণ্যসমূহ:*%0A${productText}%0A` +
+                         `*মোট বিল:* ৳${data.totalAmount}`;
+
+            const waURL = `https://wa.me/${myNumber}?text=${text}`;
+            
+            alert("অর্ডার সফল হয়েছে! হোয়াটসঅ্যাপে পাঠানো হচ্ছে...");
+            
+            // Cart পরিষ্কার করা
+            localStorage.removeItem('cart');
+            
+            // WhatsApp এ নিয়ে যাওয়া
+            window.location.href = waURL;
+        }
+    </script>
+</body>
+</html>

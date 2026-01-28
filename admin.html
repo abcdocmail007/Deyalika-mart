@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DecoTech Admin - Add Product</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 350px; }
+        h2 { color: #004d40; text-align: center; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #004d40; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #00695c; }
+    </style>
+</head>
+<body>
+  <script>
+    // Jodi login kora na thake, tobe login page-e niye jabe
+    if (localStorage.getItem('isAdmin') !== 'true') {
+        window.location.href = 'login.html';
+    }
+
+    function logout() {
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'login.html';
+    }
+</script>
+    <div class="card">
+        <h2>DecoTech Admin</h2>
+        <input type="text" id="name" placeholder="Product Name (e.g. Smart Lamp)">
+        <input type="number" id="price" placeholder="Price (BDT)">
+        <input type="text" id="image" placeholder="Image URL (Link)">
+        <select id="category">
+            <option value="Decor">Home Decor</option>
+            <option value="Gadget">Gadgets</option>
+            <option value="Clothing">Clothing</option>
+        </select>
+        <button onclick="uploadProduct()">Upload to Shop</button>
+    </div>
+
+    <script>
+        async function uploadProduct() {
+            const product = {
+                name: document.getElementById('name').value,
+                price: document.getElementById('price').value,
+                image: document.getElementById('image').value,
+                category: document.getElementById('category').value
+            };
+
+            const response = await fetch('http://localhost:5000/api/add-product', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(product)
+            });
+
+            if (response.ok) {
+                alert("DecoTech-e ponno jog hoyeche! 🎉");
+                location.reload(); 
+            } else {
+                alert("Error! Server check korun.");
+            }
+        }
+    </script>
+</body>
+</html>
