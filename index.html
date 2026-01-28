@@ -145,7 +145,7 @@
 
 <script>
     async function fetchProducts() {
-        const res = await fetch('http://localhost:5000/api/products');
+        const res = await fetch('https://decotech-api.onrender.com');
         const products = await res.json();
         const list = document.getElementById('productList');
         list.innerHTML = products.slice(0, 4).map(p => `
@@ -175,4 +175,5 @@
     updateCartCount();
 </script>
 </body>
+
 </html>
