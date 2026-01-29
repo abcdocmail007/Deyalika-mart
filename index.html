@@ -173,9 +173,18 @@
 
     fetchProducts();
     updateCartCount();
+
+    const apiURL = 'https://decotech-api.onrender.com/api/products';
+
+async function loadProducts() {
+    const res = await fetch(apiURL); // Ekhane localhost link thakle change korun
+    const products = await res.json();
+    // Baki code...
+}
 </script>
 </body>
 
 </html>
+
 
 
