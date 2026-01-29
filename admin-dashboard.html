@@ -10,30 +10,20 @@
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --bg: #f0f2f5; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); }
-
-        /* Admin Nav */
         .admin-nav { background: var(--primary); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; }
         .admin-nav a { color: white; text-decoration: none; font-weight: 600; }
-
         .dashboard-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
-
-        /* Form Card */
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .card h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 10px; }
-
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; outline: none; box-sizing: border-box; }
-
         .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
         .add-btn:hover { background: #00332a; }
-
-        /* Product Table */
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
         th { background: #eee; padding: 15px; text-align: left; }
         td { padding: 15px; border-bottom: 1px solid #eee; }
         .delete-btn { color: #e74c3c; cursor: pointer; font-size: 18px; }
-
         .prod-img-small { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
     </style>
 </head>
@@ -96,27 +86,28 @@
     </div>
 
     <div class="dashboard-container" style="grid-template-columns: 1fr;">
-    <div class="card" style="margin-top: 30px;">
-        <h3>আসা অর্ডারগুলো (Customer Orders)</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Customer</th>
-                    <th>Phone & Address</th>
-                    <th>Products</th>
-                    <th>Total</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="orderList"></tbody>
-        </table>
+        <div class="card" style="margin-top: 30px;">
+            <h3>আসা অর্ডারগুলো (Customer Orders)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Phone & Address</th>
+                        <th>Products</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="orderList"></tbody>
+            </table>
+        </div>
     </div>
-</div>
 
     <script>
-        const apiURL = 'https://decotech-api.onrender.com';
+        const apiURL = 'https://decotech-api.onrender.com/api/products'; // Correct Endpoint
+        const orderURL = 'https://decotech-api.onrender.com/api/orders'; // Correct Endpoint
 
-        // 1. Product Load kora
+        // 1. Load Products
         async function loadProducts() {
             try {
                 const res = await fetch(apiURL);
@@ -136,7 +127,7 @@
             }
         }
 
-        // 2. Product Add kora
+        // 2. Add Product
         document.getElementById('addProductForm').onsubmit = async (e) => {
             e.preventDefault();
             
@@ -148,13 +139,12 @@
             const fileInput = document.getElementById('pImageFile');
             const imageURL = document.getElementById('pImageURL').value;
 
-            // Image Upload check
             if (fileInput.files.length > 0) {
                 formData.append('image', fileInput.files[0]);
             } else if (imageURL) {
                 formData.append('imageURL', imageURL);
             } else {
-                alert("দয়া করে ছবি আপলোড করুন অথবা লিঙ্ক দিন");
+                alert("দয়া করে ছবি আপলোড করুন অথবা লিঙ্ক দিন");
                 return;
             }
 
@@ -165,18 +155,18 @@
                 });
 
                 if(response.ok) {
-                    alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
+                    alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
                     document.getElementById('addProductForm').reset();
                     loadProducts();
                 } else {
-                    alert("কিছু একটা সমস্যা হয়েছে!");
+                    alert("কিছু একটা সমস্যা হয়েছে!");
                 }
             } catch (err) {
                 console.error("Error adding product:", err);
             }
         };
 
-        // 3. Product Delete kora
+        // 3. Delete Product
         async function deleteProduct(id) {
             if(confirm("আপনি কি এটি ডিলিট করতে চান?")) {
                 try {
@@ -190,35 +180,38 @@
             }
         }
 
-        // Initial load
-        loadProducts();
-
+        // 4. Load Orders
         async function loadOrders() {
-    const res = await fetch('http://localhost:5000/api/orders');
-    const orders = await res.json();
-    const list = document.getElementById('orderList');
-    
-    list.innerHTML = orders.map(order => `
-        <tr>
-            <td><strong>${order.customerName}</strong></td>
-            <td>${order.phone}<br><small>${order.address}</small></td>
-            <td>${order.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>
-            <td>৳${order.totalAmount}</td>
-            <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
-        </tr>
-    `).join('');
-}
+            try {
+                const res = await fetch(orderURL);
+                const orders = await res.json();
+                const list = document.getElementById('orderList');
+                
+                list.innerHTML = orders.map(order => `
+                    <tr>
+                        <td><strong>${order.customerName}</strong></td>
+                        <td>${order.phone}<br><small>${order.address}</small></td>
+                        <td>${order.products.map(p => `${p.name} (x${p.quantity})`).join(', ')}</td>
+                        <td>৳${order.totalAmount}</td>
+                        <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("Orders load failed:", err);
+            }
+        }
 
-async function deleteOrder(id) {
-    if(confirm("অর্ডারটি ডিলিট করতে চান?")) {
-        await fetch(`http://localhost:5000/api/orders/${id}`, { method: 'DELETE' });
+        // 5. Delete Order
+        async function deleteOrder(id) {
+            if(confirm("অর্ডারটি ডিলিট করতে চান?")) {
+                await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
+                loadOrders();
+            }
+        }
+
+        // Initial Calls
+        loadProducts();
         loadOrders();
-    }
-}
-
-// loadProducts()-er niche eti call korun
-loadOrders();
     </script>
 </body>
-
 </html>
