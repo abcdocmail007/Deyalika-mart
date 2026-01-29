@@ -22,7 +22,7 @@
         .cart-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #eee; color: #666; font-family: 'Hind Siliguri'; }
         td { padding: 20px 15px; border-bottom: 1px solid #eee; }
 
         /* QUANTITY SELECTOR */
@@ -32,8 +32,9 @@
         .qty-box span { width: 40px; text-align: center; font-weight: 600; display: inline-block; }
 
         .summary-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: #1d4ed8; font-size: 22px; }
-        .checkout-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; }
+        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: var(--primary); font-size: 22px; }
+        .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
+        .checkout-btn:hover { background: #00332a; transform: translateY(-2px); }
 
         footer { background: var(--primary); color: white; padding: 40px 5%; text-align: center; margin-top: 50px; }
         @media (max-width: 850px) { .cart-wrapper { grid-template-columns: 1fr; } }
@@ -53,7 +54,7 @@
 
     <div class="cart-wrapper">
         <div class="cart-card">
-            <h2 style="margin-bottom:20px;"><i class="fas fa-shopping-basket"></i> আপনার শপিং কার্ট</h2>
+            <h2 style="margin-bottom:20px; font-family: 'Hind Siliguri';"><i class="fas fa-shopping-basket"></i> আপনার শপিং কার্ট</h2>
             <table>
                 <thead>
                     <tr>
@@ -63,29 +64,27 @@
                         <th style="text-align: right;">অ্যাকশন</th>
                     </tr>
                 </thead>
-                <tbody id="cartTableBody">
-                    </tbody>
+                <tbody id="cartTableBody"></tbody>
             </table>
         </div>
 
         <div class="summary-card">
-            <h3>অর্ডার সামারি</h3>
+            <h3 style="font-family: 'Hind Siliguri';">অর্ডার সামারি</h3>
             <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>সাব-টোটাল</span><span id="subtotal">৳ ০</span></div>
             <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
             <div class="total-row" style="display:flex; justify-content:space-between;"><span>মোট</span><span id="total">৳ ৬০</span></div>
-            <button class="checkout-btn">চেকআউট করুন</button>
+            <button class="checkout-btn" onclick="handleCheckout()">চেকআউট করুন</button>
         </div>
     </div>
 
     <footer>
         <div class="footer-bottom">
             <a href="admin-login.html" style="color: rgba(255,255,255,0.3); text-decoration: none; font-size: 12px;">Admin Login</a> <br>
-    &copy; 2026 DecoTech. All Rights Reserved.
-</div>
+            &copy; 2026 DecoTech. All Rights Reserved.
+        </div>
     </footer>
 
     <script>
-        // LocalStorage theke data ana
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
         function renderCart() {
@@ -99,22 +98,22 @@
             }
 
             tableBody.innerHTML = cart.map((item, index) => {
-                // Protiti item-er total (price * quantity)
-                const itemTotal = item.price * (item.quantity || 1);
+                const qty = item.quantity || 1;
+                const itemTotal = item.price * qty;
                 subtotal += itemTotal;
 
                 return `
                     <tr>
                         <td>
                             <div style="display:flex; align-items:center; gap:10px;">
-                                <img src="${item.image || 'https://via.placeholder.com/50'}" width="50" style="border-radius:5px;">
+                                <img src="${item.image || 'https://placehold.co/50x50'}" width="50" style="border-radius:5px; object-fit:cover;">
                                 <span>${item.name}</span>
                             </div>
                         </td>
                         <td>
                             <div class="qty-box">
                                 <button onclick="updateQty(${index}, -1)">-</button>
-                                <span>${item.quantity || 1}</span>
+                                <span>${qty}</span>
                                 <button onclick="updateQty(${index}, 1)">+</button>
                             </div>
                         </td>
@@ -129,40 +128,75 @@
             updateSummary(subtotal);
         }
 
-        // Quantity Update Function
         window.updateQty = function(index, change) {
             if (!cart[index].quantity) cart[index].quantity = 1;
-            
             cart[index].quantity += change;
-
-            // Quantity 1 er niche jete parbe na
             if (cart[index].quantity < 1) cart[index].quantity = 1;
-
             saveAndRefresh();
         }
 
-        // Delete Function
         window.deleteItem = function(index) {
-            if(confirm("আপনি কি পণ্যটি সরিয়ে ফেলতে চান?")) {
+            if(confirm("আপনি কি পণ্যটি সরিয়ে ফেলতে চান?")) {
                 cart.splice(index, 1);
                 saveAndRefresh();
             }
         }
 
-        // Summary Update
         function updateSummary(subtotal) {
             const delivery = subtotal > 0 ? 60 : 0;
             document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
             document.getElementById('total').innerText = `৳ ${subtotal + delivery}`;
         }
 
-        // Save to LocalStorage and Refresh UI
         function saveAndRefresh() {
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
         }
 
-        // Initial Load
+        // --- NEW CHECKOUT LOGIC ---
+        async function handleCheckout() {
+            if (cart.length === 0) {
+                alert("আপনার কার্ট খালি!");
+                return;
+            }
+
+            const name = prompt("আপনার নাম লিখুন:");
+            const phone = prompt("আপনার মোবাইল নম্বর লিখুন:");
+            const address = prompt("আপনার পূর্ণ ঠিকানা লিখুন:");
+
+            if (name && phone && address) {
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+                
+                const orderData = {
+                    customerName: name,
+                    phone: phone,
+                    address: address,
+                    products: cart.map(item => `${item.name} (${item.quantity || 1})`).join(', '),
+                    total: subtotal + 60
+                };
+
+                try {
+                    const res = await fetch('https://decotech-api.onrender.com/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    });
+
+                    if (res.ok) {
+                        alert("ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।");
+                        localStorage.removeItem('cart');
+                        window.location.href = 'index.html';
+                    } else {
+                        alert("অর্ডার দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+                    }
+                } catch (err) {
+                    alert("সার্ভার কানেকশন এরর! আপনার ইন্টারনেট চেক করুন।");
+                }
+            } else {
+                alert("সবগুলো তথ্য সঠিকভাবে প্রদান করুন।");
+            }
+        }
+
         renderCart();
     </script>
 </body>
