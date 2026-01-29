@@ -6,6 +6,14 @@
     <title>চেকআউট | DecoTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // এখানে আপনার EmailJS Public Key বসাবেন
+        })();
+    </script>
+
     <style>
         :root { --primary: #004d40; --accent: #c09b5d; --bg: #f8faf9; }
         body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; }
@@ -25,7 +33,8 @@
         .method-box i { font-size: 20px; margin-bottom: 5px; display: block; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
         .total-price { font-size: 22px; font-weight: 700; color: #1d4ed8; }
-        .confirm-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; }
+        .confirm-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        .confirm-btn:hover { background: #00332a; }
         @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -49,8 +58,8 @@
                     <input type="tel" id="phone" placeholder="017XXXXXXXX" required>
                 </div>
                 <div class="form-group">
-                    <label>ইমেইল (ঐচ্ছিক)</label>
-                    <input type="email" id="email" placeholder="name@example.com">
+                    <label>ইমেইল (অর্ডার রিসিট পেতে)</label>
+                    <input type="email" id="email" placeholder="name@example.com" required>
                 </div>
             </div>
             <div class="form-group">
@@ -97,17 +106,15 @@
 <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let selectedPayment = 'Cash on Delivery';
-    let finalTotalAmount = 0; // এটি নম্বর হিসেবে রাখা হয়েছে
+    let finalTotalAmount = 0;
 
     function renderSummary() {
         const itemContainer = document.getElementById('orderItems');
         let subtotal = 0;
-
         if(cart.length === 0) {
             itemContainer.innerHTML = '<p style="color:red;">কার্ট খালি!</p>';
             return;
         }
-
         itemContainer.innerHTML = cart.map(item => {
             const price = parseInt(item.price) || 0;
             const qty = item.quantity || 1;
@@ -118,7 +125,6 @@
                     <span>৳ ${itemTotal}</span>
                 </div>`;
         }).join('');
-
         finalTotalAmount = subtotal + 60;
         document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
         document.getElementById('totalDisplay').innerText = `৳ ${finalTotalAmount}`;
@@ -130,23 +136,31 @@
         element.classList.add('active');
     }
 
+    // অর্ডার হ্যান্ডলার
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const btn = document.getElementById('submitBtn');
-        btn.innerText = "প্রসেসিং হচ্ছে...";
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+
+        btn.innerText = "অর্ডার প্রসেসিং হচ্ছে...";
         btn.disabled = true;
 
         const orderData = {
-            customerName: document.getElementById('name').value,
-            phone: document.getElementById('phone').value,
-            address: document.getElementById('address').value,
+            customerName: name,
+            phone: phone,
+            email: email,
+            address: address,
             paymentMethod: selectedPayment,
-            products: cart.map(i => `${i.name} (${i.quantity || 1})`).join(', '),
-            total: finalTotalAmount // নিশ্চিতভাবে Number হিসেবে পাঠানো হচ্ছে
+            products: cart.map(i => `${i.name} (x${i.quantity || 1})`).join(', '),
+            total: finalTotalAmount
         };
 
         try {
+            // ১. অ্যাডমিন ড্যাশবোর্ডে অর্ডার সেভ করা
             const res = await fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -154,20 +168,47 @@
             });
 
             if(res.ok) {
-                alert("অর্ডার সফল হয়েছে!");
+                // ২. ইমেইল পাঠানো (EmailJS - Free)
+                // note: ইমেইল জেএস সেটআপ করা থাকলে এটি কাজ করবে
+                emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                    to_name: name,
+                    to_email: email,
+                    order_details: orderData.products,
+                    total_price: finalTotalAmount,
+                    address: address
+                });
+
+                // ৩. হোয়াটসঅ্যাপে মেসেজ পাঠানো (Redirect - Free)
+                sendToWhatsApp(orderData);
+
+                alert("অর্ডার সফল হয়েছে! আপনার ইমেইল এবং হোয়াটসঅ্যাপ চেক করুন।");
                 localStorage.removeItem('cart');
                 window.location.href = 'index.html';
             } else {
                 alert("অর্ডার দিতে সমস্যা হয়েছে।");
-                btn.innerText = "অর্ডার কনফার্ম করুন";
-                btn.disabled = false;
             }
         } catch (err) {
             alert("সার্ভার সমস্যা!");
+        } finally {
             btn.innerText = "অর্ডার কনফার্ম করুন";
             btn.disabled = false;
         }
     });
+
+    // হোয়াটসঅ্যাপ মেসেজ লজিক
+    function sendToWhatsApp(data) {
+        const adminNumber = "8801700000000"; // এখানে আপনার অ্যাডমিন বা গ্রুপ নাম্বার দিন
+        let msg = `🚀 *New Order - DecoTech*%0A%0A`;
+        msg += `👤 *Name:* ${data.customerName}%0A`;
+        msg += `📞 *Phone:* ${data.phone}%0A`;
+        msg += `📍 *Address:* ${data.address}%0A`;
+        msg += `💰 *Total:* ৳${data.total}%0A`;
+        msg += `💳 *Payment:* ${data.paymentMethod}%0A`;
+        msg += `🛒 *Products:* ${data.products}`;
+
+        const url = `https://wa.me/${adminNumber}?text=${msg}`;
+        window.open(url, '_blank');
+    }
 
     renderSummary();
 </script>
