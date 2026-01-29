@@ -226,6 +226,26 @@
 
         loadProducts();
         loadOrders();
+
+        const apiURL = 'https://decotech-api.onrender.com/api/products';
+
+// Delete Function Fixed
+async function deleteProduct(id) {
+    if(confirm("Are you sure?")) {
+        try {
+            const response = await fetch(`${apiURL}/${id}`, { 
+                method: 'DELETE' 
+            });
+            if(response.ok) {
+                alert("Deleted!");
+                loadProducts(); // Refresh list
+            }
+        } catch (err) {
+            console.error("Delete failed:", err);
+        }
+    }
+}
     </script>
 </body>
 </html>
+
