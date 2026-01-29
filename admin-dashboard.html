@@ -128,43 +128,48 @@
         }
 
         // 2. Add Product
-        document.getElementById('addProductForm').onsubmit = async (e) => {
-            e.preventDefault();
-            
-            const formData = new FormData();
-            formData.append('name', document.getElementById('pName').value);
-            formData.append('category', document.getElementById('pCategory').value);
-            formData.append('price', document.getElementById('pPrice').value);
-            
-            const fileInput = document.getElementById('pImageFile');
-            const imageURL = document.getElementById('pImageURL').value;
+        // 2. Add Product
+document.getElementById('addProductForm').onsubmit = async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('name', document.getElementById('pName').value);
+    formData.append('category', document.getElementById('pCategory').value);
+    formData.append('price', document.getElementById('pPrice').value);
+    
+    const fileInput = document.getElementById('pImageFile');
+    const imageURL = document.getElementById('pImageURL').value;
 
-            if (fileInput.files.length > 0) {
-                formData.append('image', fileInput.files[0]);
-            } else if (imageURL) {
-                formData.append('imageURL', imageURL);
-            } else {
-                alert("দয়া করে ছবি আপলোড করুন অথবা লিঙ্ক দিন");
-                return;
-            }
+    // Fix: Jeno file ba link jekono ekta dilei database-e jay
+    if (fileInput.files.length > 0) {
+        formData.append('image', fileInput.files[0]); // Chhobi upload korle
+    } else if (imageURL.trim() !== "") {
+        formData.append('imageURL', imageURL); // Shudhu link dile
+    } else {
+        alert("দয়া করে ছবি আপলোড করুন অথবা লিঙ্ক দিন");
+        return;
+    }
 
-            try {
-                const response = await fetch(apiURL, {
-                    method: 'POST',
-                    body: formData
-                });
+    try {
+        const response = await fetch(apiURL, {
+            method: 'POST',
+            body: formData
+        });
 
-                if(response.ok) {
-                    alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
-                    document.getElementById('addProductForm').reset();
-                    loadProducts();
-                } else {
-                    alert("কিছু একটা সমস্যা হয়েছে!");
-                }
-            } catch (err) {
-                console.error("Error adding product:", err);
-            }
-        };
+        if(response.ok) {
+            alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
+            document.getElementById('addProductForm').reset();
+            loadProducts();
+        } else {
+            // Backend theke asha ashol error message dekhabe
+            const errorData = await response.json();
+            alert("সমস্যা: " + (errorData.message || "Kichu ekta vul hoyeche"));
+        }
+    } catch (err) {
+        console.error("Error adding product:", err);
+        alert("Server-er shathe kotha bola jachche na!");
+    }
+};
 
         // 3. Delete Product
         async function deleteProduct(id) {
@@ -215,3 +220,4 @@
     </script>
 </body>
 </html>
+
