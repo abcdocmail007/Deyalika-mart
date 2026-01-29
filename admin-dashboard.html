@@ -17,13 +17,15 @@
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .add-btn:hover { background: #00332c; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
         th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 14px; color: #555; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; }
-        .prod-img-small { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
-        .method-tag { background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-top: 5px; }
+        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .delete-btn:hover { color: #c0392b; transform: scale(1.1); }
+        .prod-img-small { width: 45px; height: 45px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+        .method-tag { background: #e3f2fd; color: #1565c0; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-top: 5px; }
         @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -115,16 +117,16 @@
             const list = document.getElementById('adminProductList');
             list.innerHTML = products.reverse().map(p => `
                 <tr>
-                    <td><img src="${p.image || p.imageUrl || 'https://placehold.co/40x40'}" class="prod-img-small"></td>
-                    <td><strong>${p.name}</strong><br><small>${p.category}</small></td>
-                    <td>৳ ${p.price}</td>
+                    <td><img src="${p.image || p.imageUrl || 'https://placehold.co/45x45?text=No+Image'}" class="prod-img-small" onerror="this.src='https://placehold.co/45x45?text=Error'"></td>
+                    <td><strong>${p.name || 'Unnamed'}</strong><br><small>${p.category || 'N/A'}</small></td>
+                    <td>৳ ${p.price || 0}</td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
                 </tr>
             `).join('');
         } catch (err) { console.error("Error loading products:", err); }
     }
 
-    // ২. প্রোডাক্ট যোগ করা
+    // ২. নতুন প্রোডাক্ট যোগ করা
     document.getElementById('addProductForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('addBtn');
@@ -145,53 +147,68 @@
                 body: JSON.stringify(productData)
             });
             if (response.ok) {
-                alert("প্রোডাক্ট যোগ হয়েছে!");
+                alert("প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!");
                 document.getElementById('addProductForm').reset();
                 loadProducts();
             }
-        } catch (err) { alert("সার্ভার এরর!"); }
+        } catch (err) { alert("সার্ভার সমস্যা! আবার চেষ্টা করুন।"); }
         finally { btn.disabled = false; btn.innerText = "Upload to Shop"; }
     };
 
-    // ৩. অর্ডার লোড করা (Fixing Amount Display)
+    // ৩. কাস্টমার অর্ডার লোড করা (Fixing 0 Amount Issue)
     async function loadOrders() {
         try {
             const res = await fetch(orderURL);
+            if (!res.ok) throw new Error("Failed to fetch");
             const orders = await res.json();
             const list = document.getElementById('orderList');
             
             list.innerHTML = orders.reverse().map(order => {
-                // মাল্টিপল ফিল্ড চেক করা যাতে ডেটা মিস না হয়
-                const totalVal = order.total || order.totalAmount || order.totalPrice || 0;
-                const custName = order.customerName || order.name || 'N/A';
-                const prodItems = order.products || order.items || 'N/A';
+                // কার্ট পেজের সেই মোট অ্যামাউন্ট পাওয়ার জন্য মাল্টিপল কী চেক করা হয়েছে
+                const finalTotal = order.total || order.totalAmount || order.totalPrice || 0;
+                const customer = order.customerName || order.name || 'অজানা কাস্টমার';
+                const items = order.products || order.items || 'কোন তথ্য নেই';
 
                 return `
                 <tr>
-                    <td><strong>${custName}</strong></td>
+                    <td><strong>${customer}</strong></td>
                     <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
                     <td>
-                        ${prodItems}
+                        ${items}
                         <br><span class="method-tag">${order.paymentMethod || 'COD'}</span>
                     </td>
-                    <td><strong>৳ ${totalVal}</strong></td>
+                    <td><strong>৳ ${finalTotal}</strong></td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
                 </tr>
                 `;
             }).join('');
-        } catch (err) { console.error("Error loading orders:", err); }
+        } catch (err) { 
+            console.error("Order load error:", err);
+            document.getElementById('orderList').innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">অর্ডার লোড করা সম্ভব হয়নি।</td></tr>';
+        }
     }
 
+    // ৪. ডিলিট করার ফাংশন
     async function deleteProduct(id) {
-        if (confirm("মুছতে চান?")) { await fetch(`${apiURL}/${id}`, { method: 'DELETE' }); loadProducts(); }
+        if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি মুছতে চান?")) {
+            await fetch(`${apiURL}/${id}`, { method: 'DELETE' });
+            loadProducts();
+        }
     }
 
     async function deleteOrder(id) {
-        if (confirm("অর্ডার মুছতে চান?")) { await fetch(`${orderURL}/${id}`, { method: 'DELETE' }); loadOrders(); }
+        if (confirm("এই অর্ডারটি কি লিস্ট থেকে মুছে ফেলতে চান?")) {
+            await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
+            loadOrders();
+        }
     }
 
-    function logout() { localStorage.removeItem('isAdmin'); window.location.href = 'admin-login.html'; }
+    function logout() {
+        localStorage.removeItem('isAdmin');
+        window.location.href = 'admin-login.html';
+    }
 
+    // শুরুতে ডেটা লোড করা
     loadProducts();
     loadOrders();
     </script>
