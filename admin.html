@@ -2,64 +2,151 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DecoTech Admin - Add Product</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DecoTech Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 350px; }
-        h2 { color: #004d40; text-align: center; margin-bottom: 20px; }
+        :root { --primary: #004d40; --bg: #f0f4f8; }
+        body { font-family: 'Hind Siliguri', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        
+        .header { background: var(--primary); color: white; padding: 15px 30px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        .admin-grid { display: grid; grid-template-columns: 350px 1fr; gap: 25px; max-width: 1400px; margin: auto; }
+        
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: fit-content; }
+        h2 { font-size: 20px; color: var(--primary); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
         input, select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #004d40; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; transition: 0.3s; }
-        button:hover { background: #00695c; }
+        button.upload-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
+        /* Order Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #eee; font-size: 14px; }
+        td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: top; }
+        
+        .status-badge { background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .payment-info { color: #1d4ed8; font-weight: 600; font-size: 12px; display: block; margin-top: 5px; }
+        .delete-btn { color: #ff5252; cursor: pointer; border: none; background: none; }
+
+        @media (max-width: 1000px) { .admin-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-  <script>
-    // Jodi login kora na thake, tobe login page-e niye jabe
-    if (localStorage.getItem('isAdmin') !== 'true') {
-        window.location.href = 'login.html';
-    }
 
-    function logout() {
-        localStorage.removeItem('isAdmin');
-        window.location.href = 'login.html';
-    }
+<script>
+    if (localStorage.getItem('isAdmin') !== 'true') { window.location.href = 'login.html'; }
+    function logout() { localStorage.removeItem('isAdmin'); window.location.href = 'login.html'; }
 </script>
+
+<div class="header">
+    <h3>DecoTech Admin Panel</h3>
+    <div>
+        <a href="index.html" style="color:white; margin-right:20px; text-decoration:none;">View Website</a>
+        <button onclick="logout()" style="background:#ff5252; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Logout</button>
+    </div>
+</div>
+
+<div class="admin-grid">
     <div class="card">
-        <h2>DecoTech Admin</h2>
-        <input type="text" id="name" placeholder="Product Name (e.g. Smart Lamp)">
-        <input type="number" id="price" placeholder="Price (BDT)">
-        <input type="text" id="image" placeholder="Image URL (Link)">
-        <select id="category">
-            <option value="Decor">Home Decor</option>
-            <option value="Gadget">Gadgets</option>
+        <h2>নতুন প্রোডাক্ট যোগ করুন</h2>
+        <input type="text" id="pName" placeholder="প্রোডাক্টের নাম">
+        <input type="number" id="pPrice" placeholder="দাম (৳)">
+        <input type="text" id="pImage" placeholder="ইমেজ লিঙ্ক (URL)">
+        <select id="pCategory">
+            <option value="Gadget">Gadget</option>
+            <option value="Home Decor">Home Decor</option>
             <option value="Clothing">Clothing</option>
         </select>
-        <button onclick="uploadProduct()">Upload to Shop</button>
+        <button class="upload-btn" onclick="uploadProduct()">Add Product</button>
     </div>
 
-    <script>
-        async function uploadProduct() {
-            const product = {
-                name: document.getElementById('name').value,
-                price: document.getElementById('price').value,
-                image: document.getElementById('image').value,
-                category: document.getElementById('category').value
-            };
+    <div class="card">
+        <h2>আসা অর্ডারগুলো (Customer Orders)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer</th>
+                    <th>Phone & Address</th>
+                    <th>Products</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="orderTableBody">
+                </tbody>
+        </table>
+    </div>
+</div>
 
-            const response = await fetch('https://decotech-api.onrender.com', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(product)
-            });
+<script>
+    const API_URL = 'https://decotech-api.onrender.com';
 
-            if (response.ok) {
-                alert("DecoTech-e ponno jog hoyeche! 🎉");
-                location.reload(); 
-            } else {
-                alert("Error! Server check korun.");
+    // 1. Upload Product
+    async function uploadProduct() {
+        const product = {
+            name: document.getElementById('pName').value,
+            price: document.getElementById('pPrice').value,
+            image: document.getElementById('pImage').value,
+            category: document.getElementById('pCategory').value
+        };
+
+        const res = await fetch(`${API_URL}/api/products`, { // URL update as per typical API structure
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(product)
+        });
+
+        if (res.ok) { alert("Product Added! 🎉"); location.reload(); }
+    }
+
+    // 2. Fetch and Display Orders (Fixed Undefined Issue)
+    async function loadOrders() {
+        try {
+            const res = await fetch(`${API_URL}/api/orders`);
+            const orders = await res.json();
+            const tableBody = document.getElementById('orderTableBody');
+
+            if (orders.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">কোন অর্ডার পাওয়া যায়নি।</td></tr>';
+                return;
             }
-        }
-    </script>
-</body>
 
+            tableBody.innerHTML = orders.reverse().map(order => `
+                <tr>
+                    <td><strong>${order.customerName || 'N/A'}</strong></td>
+                    <td>
+                        ${order.phone || 'N/A'}<br>
+                        <small style="color:#666;">${order.address || 'N/A'}</small>
+                    </td>
+                    <td>
+                        ${order.products || 'No Items'}
+                        <span class="payment-info"><i class="fas fa-wallet"></i> ${order.paymentMethod || 'COD'}</span>
+                    </td>
+                    <td><strong>৳ ${order.total || 0}</strong></td>
+                    <td>
+                        <button class="delete-btn" onclick="deleteOrder('${order._id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        } catch (err) {
+            console.error("Order Load Error:", err);
+        }
+    }
+
+    // 3. Delete Order
+    async function deleteOrder(id) {
+        if(confirm("অর্ডারটি মুছে ফেলতে চান?")) {
+            await fetch(`${API_URL}/api/orders/${id}`, { method: 'DELETE' });
+            loadOrders();
+        }
+    }
+
+    // Load orders on page start
+    loadOrders();
+</script>
+
+</body>
 </html>
