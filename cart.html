@@ -32,9 +32,9 @@
         .qty-box span { width: 40px; text-align: center; font-weight: 600; display: inline-block; }
 
         .summary-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); height: fit-content; }
-        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: var(--primary); font-size: 22px; }
-        .checkout-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
-        .checkout-btn:hover { background: #00332a; transform: translateY(-2px); }
+        .total-row { border-top: 2px solid #eee; padding-top: 15px; font-weight: 700; color: #1d4ed8; font-size: 22px; }
+        .checkout-btn { width: 100%; background: var(--accent); color: white; border: none; padding: 15px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; font-family: 'Hind Siliguri'; }
+        .checkout-btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         footer { background: var(--primary); color: white; padding: 40px 5%; text-align: center; margin-top: 50px; }
         @media (max-width: 850px) { .cart-wrapper { grid-template-columns: 1fr; } }
@@ -73,7 +73,7 @@
             <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>সাব-টোটাল</span><span id="subtotal">৳ ০</span></div>
             <div style="display:flex; justify-content:space-between; margin:10px 0;"><span>ডেলিভারি চার্জ</span><span>৳ ৬০</span></div>
             <div class="total-row" style="display:flex; justify-content:space-between;"><span>মোট</span><span id="total">৳ ৬০</span></div>
-            <button class="checkout-btn" onclick="handleCheckout()">চেকআউট করুন</button>
+            <button class="checkout-btn" onclick="goToCheckout()">চেকআউট করুন</button>
         </div>
     </div>
 
@@ -153,48 +153,13 @@
             renderCart();
         }
 
-        // --- NEW CHECKOUT LOGIC ---
-        async function handleCheckout() {
+        // Redirect to new professional checkout page
+        function goToCheckout() {
             if (cart.length === 0) {
-                alert("আপনার কার্ট খালি!");
+                alert("আপনার কার্ট খালি! অনুগ্রহ করে আগে পণ্য যোগ করুন।");
                 return;
             }
-
-            const name = prompt("আপনার নাম লিখুন:");
-            const phone = prompt("আপনার মোবাইল নম্বর লিখুন:");
-            const address = prompt("আপনার পূর্ণ ঠিকানা লিখুন:");
-
-            if (name && phone && address) {
-                const subtotal = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-                
-                const orderData = {
-                    customerName: name,
-                    phone: phone,
-                    address: address,
-                    products: cart.map(item => `${item.name} (${item.quantity || 1})`).join(', '),
-                    total: subtotal + 60
-                };
-
-                try {
-                    const res = await fetch('https://decotech-api.onrender.com/api/orders', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(orderData)
-                    });
-
-                    if (res.ok) {
-                        alert("ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।");
-                        localStorage.removeItem('cart');
-                        window.location.href = 'index.html';
-                    } else {
-                        alert("অর্ডার দিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
-                    }
-                } catch (err) {
-                    alert("সার্ভার কানেকশন এরর! আপনার ইন্টারনেট চেক করুন।");
-                }
-            } else {
-                alert("সবগুলো তথ্য সঠিকভাবে প্রদান করুন।");
-            }
+            window.location.href = 'checkout.html';
         }
 
         renderCart();
