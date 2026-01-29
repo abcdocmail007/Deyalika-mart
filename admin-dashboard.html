@@ -19,10 +19,12 @@
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .add-btn:disabled { background: #ccc; cursor: not-allowed; }
         table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; margin-top: 10px; }
         th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 14px; color: #555; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; }
+        .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .delete-btn:hover { color: #c0392b; transform: scale(1.1); }
         .prod-img-small { width: 40px; height: 40px; object-fit: cover; border-radius: 5px; }
         .method-tag { background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; display: inline-block; margin-top: 5px; }
         @media (max-width: 900px) { .dashboard-container { grid-template-columns: 1fr; } }
@@ -60,9 +62,9 @@
                 </div>
                 <div class="input-group">
                     <label>ছবি লিঙ্ক (Image URL)</label>
-                    <input type="text" id="pImageURL" placeholder="https://example.com/image.jpg" required>
+                    <input type="url" id="pImageURL" placeholder="https://example.com/image.jpg" required>
                 </div>
-                <button type="submit" class="add-btn">Upload to Shop</button>
+                <button type="submit" id="addBtn" class="add-btn">Upload to Shop</button>
             </form>
         </div>
 
@@ -114,91 +116,15 @@
             const res = await fetch(apiURL);
             const products = await res.json();
             const list = document.getElementById('adminProductList');
+            
+            if (products.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" style="text-align:center;">কোন প্রোডাক্ট পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+
             list.innerHTML = products.reverse().map(p => `
                 <tr>
-                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/40x40'"></td>
+                    <td><img src="${p.image}" class="prod-img-small" onerror="this.src='https://placehold.co/40x40?text=No+Img'"></td>
                     <td><strong>${p.name}</strong><br><small>${p.category}</small></td>
                     <td>৳ ${p.price}</td>
-                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
-                </tr>
-            `).join('');
-        } catch (err) { console.error("Load failed:", err); }
-    }
-
-    // ২. প্রোডাক্ট যোগ করা
-    document.getElementById('addProductForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const productData = {
-            name: document.getElementById('pName').value,
-            category: document.getElementById('pCategory').value,
-            price: document.getElementById('pPrice').value,
-            image: document.getElementById('pImageURL').value
-        };
-
-        try {
-            const response = await fetch(apiURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(productData)
-            });
-            if (response.ok) {
-                alert("প্রোডাক্ট যোগ করা হয়েছে!");
-                document.getElementById('addProductForm').reset();
-                loadProducts();
-            }
-        } catch (err) { alert("সার্ভার সমস্যা!"); }
-    };
-
-    // ৩. অর্ডার লোড করা (FIXED UNDEFINED & AMOUNT 0)
-    async function loadOrders() {
-        try {
-            const res = await fetch(orderURL);
-            const orders = await res.json();
-            const list = document.getElementById('orderList');
-            
-            list.innerHTML = orders.reverse().map(order => {
-                // ডাটাবেসে যে নামেই টোটাল থাকুক না কেন সেটি খুজে বের করার লজিক
-                const displayTotal = order.total || order.totalAmount || order.totalPrice || 0;
-                
-                return `
-                <tr>
-                    <td><strong>${order.customerName || 'N/A'}</strong></td>
-                    <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
-                    <td>
-                        ${order.products || 'No items'}
-                        <br><span class="method-tag">${order.paymentMethod || 'Cash on Delivery'}</span>
-                    </td>
-                    <td><strong>৳ ${displayTotal}</strong></td>
-                    <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
-                </tr>
-                `;
-            }).join('');
-        } catch (err) { console.error("Orders failed:", err); }
-    }
-
-    // ডিলিট ফাংশনসমূহ
-    async function deleteProduct(id) {
-        if (confirm("প্রোডাক্টটি মুছতে চান?")) {
-            await fetch(`${apiURL}/${id}`, { method: 'DELETE' });
-            loadProducts();
-        }
-    }
-
-    async function deleteOrder(id) {
-        if (confirm("অর্ডারটি মুছতে চান?")) {
-            await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
-            loadOrders();
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('isAdmin');
-        window.location.href = 'admin-login.html';
-    }
-
-    // প্রাথমিক লোড
-    loadProducts();
-    loadOrders();
-    </script>
-</body>
-</html>
+                    <td><i class="fas fa-trash-alt delete-btn"
