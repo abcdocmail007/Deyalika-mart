@@ -6,7 +6,6 @@
     <title>Admin Dashboard | DecoTech</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root { --primary: #004d40; --accent: #ff9800; --bg: #f0f2f5; }
         body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); }
@@ -19,8 +18,7 @@
         .input-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
         .input-group input, .input-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
         .add-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: 600; }
-        .add-btn:disabled { background: #ccc; cursor: not-allowed; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; }
         th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 14px; color: #555; }
         td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
         .delete-btn { color: #e74c3c; cursor: pointer; font-size: 16px; }
@@ -45,7 +43,7 @@
             <form id="addProductForm">
                 <div class="input-group">
                     <label>প্রোডাক্টের নাম</label>
-                    <input type="text" id="pName" placeholder="উদা: স্মার্ট বাল্ব" required>
+                    <input type="text" id="pName" placeholder="যেমন: স্মার্ট বাল্ব" required>
                 </div>
                 <div class="input-group">
                     <label>ক্যাটেগরি</label>
@@ -118,15 +116,15 @@
             list.innerHTML = products.reverse().map(p => `
                 <tr>
                     <td><img src="${p.image || p.imageUrl || 'https://placehold.co/40x40'}" class="prod-img-small"></td>
-                    <td><strong>${p.name || 'N/A'}</strong><br><small>${p.category || 'N/A'}</small></td>
-                    <td>৳ ${p.price || 0}</td>
+                    <td><strong>${p.name}</strong><br><small>${p.category}</small></td>
+                    <td>৳ ${p.price}</td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteProduct('${p._id}')"></i></td>
                 </tr>
             `).join('');
-        } catch (err) { console.error("Load failed:", err); }
+        } catch (err) { console.error("Error loading products:", err); }
     }
 
-    // ২. প্রোডাক্ট যোগ করা (Fixing Upload Issues)
+    // ২. প্রোডাক্ট যোগ করা
     document.getElementById('addProductForm').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('addBtn');
@@ -147,18 +145,15 @@
                 body: JSON.stringify(productData)
             });
             if (response.ok) {
-                alert("প্রোডাক্ট যোগ করা হয়েছে!");
+                alert("প্রোডাক্ট যোগ হয়েছে!");
                 document.getElementById('addProductForm').reset();
                 loadProducts();
             }
-        } catch (err) { alert("সার্ভার সমস্যা!"); }
-        finally {
-            btn.disabled = false;
-            btn.innerText = "Upload to Shop";
-        }
+        } catch (err) { alert("সার্ভার এরর!"); }
+        finally { btn.disabled = false; btn.innerText = "Upload to Shop"; }
     };
 
-    // ৩. অর্ডার লোড করা (Fixing Amount 0/Undefined)
+    // ৩. অর্ডার লোড করা (Fixing Amount Display)
     async function loadOrders() {
         try {
             const res = await fetch(orderURL);
@@ -166,43 +161,36 @@
             const list = document.getElementById('orderList');
             
             list.innerHTML = orders.reverse().map(order => {
-                // মাল্টিপল ফিল্ড চেক করা হচ্ছে যাতে অ্যামাউন্ট মিস না হয়
-                const totalAmount = order.total || order.totalAmount || order.totalPrice || 0;
-                
+                // মাল্টিপল ফিল্ড চেক করা যাতে ডেটা মিস না হয়
+                const totalVal = order.total || order.totalAmount || order.totalPrice || 0;
+                const custName = order.customerName || order.name || 'N/A';
+                const prodItems = order.products || order.items || 'N/A';
+
                 return `
                 <tr>
-                    <td><strong>${order.customerName || order.name || 'N/A'}</strong></td>
+                    <td><strong>${custName}</strong></td>
                     <td>${order.phone || 'N/A'}<br><small style="color:#666">${order.address || 'N/A'}</small></td>
                     <td>
-                        ${order.products || 'No items'}
+                        ${prodItems}
                         <br><span class="method-tag">${order.paymentMethod || 'COD'}</span>
                     </td>
-                    <td><strong>৳ ${totalAmount}</strong></td>
+                    <td><strong>৳ ${totalVal}</strong></td>
                     <td><i class="fas fa-trash-alt delete-btn" onclick="deleteOrder('${order._id}')"></i></td>
                 </tr>
                 `;
             }).join('');
-        } catch (err) { console.error("Orders failed:", err); }
+        } catch (err) { console.error("Error loading orders:", err); }
     }
 
     async function deleteProduct(id) {
-        if (confirm("মুছে ফেলতে চান?")) {
-            await fetch(`${apiURL}/${id}`, { method: 'DELETE' });
-            loadProducts();
-        }
+        if (confirm("মুছতে চান?")) { await fetch(`${apiURL}/${id}`, { method: 'DELETE' }); loadProducts(); }
     }
 
     async function deleteOrder(id) {
-        if (confirm("অর্ডারটি মুছতে চান?")) {
-            await fetch(`${orderURL}/${id}`, { method: 'DELETE' });
-            loadOrders();
-        }
+        if (confirm("অর্ডার মুছতে চান?")) { await fetch(`${orderURL}/${id}`, { method: 'DELETE' }); loadOrders(); }
     }
 
-    function logout() {
-        localStorage.removeItem('isAdmin');
-        window.location.href = 'admin-login.html';
-    }
+    function logout() { localStorage.removeItem('isAdmin'); window.location.href = 'admin-login.html'; }
 
     loadProducts();
     loadOrders();
