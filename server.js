@@ -93,3 +93,14 @@ app.delete('/api/orders/:id', async (req, res) => {
     res.send({ message: "Order Deleted" });
 
 });
+
+// Product Delete Route
+app.delete('/api/products/:id', async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: "Product Deleted Successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
