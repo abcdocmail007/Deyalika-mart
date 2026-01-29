@@ -124,6 +124,24 @@
         }
 
         loadGadgets();
+
+        async function displayGadgets() {
+    const res = await fetch('https://decotech-api.onrender.com/api/products');
+    const allProducts = await res.json();
+    
+    // শুধুমাত্র Gadget ক্যাটেগরি ফিল্টার করা হচ্ছে
+    const gadgets = allProducts.filter(p => p.category === 'Gadget');
+    
+    const container = document.getElementById('gadgetContainer');
+    container.innerHTML = gadgets.map(p => `
+        <div class="product-card">
+            <img src="${p.image}">
+            <h3>${p.name}</h3>
+            <p>৳${p.price}</p>
+        </div>
+    `).join('');
+}
     </script>
 </body>
+
 </html>
