@@ -10,10 +10,13 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
+            // EmailJS Initialization
             if (typeof emailjs !== 'undefined') {
                 emailjs.init({
                     publicKey: "WnceGWWVztvV9vkRD",
                 });
+            } else {
+                console.error("EmailJS SDK লোড হতে পারেনি। ইন্টারনেট কানেকশন চেক করুন।");
             }
         })();
     </script>
@@ -161,37 +164,42 @@
         };
 
         const completeOrder = () => {
-            alert("অর্ডার সফল হয়েছে!");
+            alert("অর্ডার সফল হয়েছে! আপনার ইমেইল (Spam ফোল্ডারসহ) চেক করুন।");
             localStorage.removeItem('cart');
             window.location.href = 'index.html';
         };
 
-        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো (এটি সবসময় কাজ করবে)
+        // ১. হোয়াটসঅ্যাপে মেসেজ পাঠানো
         sendToWhatsApp(orderData);
 
-        // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং (ব্যর্থ হলেও অর্ডার সম্পন্ন হবে)
+        // ২. ডাটাবেস এবং ইমেইল হ্যান্ডলিং
         try {
-            // API কল
+            // API কল (Render Server)
             fetch('https://decotech-api.onrender.com/api/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderData)
-            }).catch(e => console.log("DB Error ignored"));
+            }).catch(() => console.log("API Server offline, but proceeding..."));
 
-            // ইমেইল পাঠানো (কোটা শেষ হলে এটি এরর দিবে, যা আমরা হ্যান্ডেল করেছি)
+            // ইমেইল পাঠানো
             if (typeof emailjs !== 'undefined') {
                 await emailjs.send("service_qbtls6p", "template_7aca5go", {
                     to_name: name,
-                    to_email: email,
+                    to_email: email, // কাস্টমারের ইমেইল
                     order_details: orderData.products,
                     total_price: finalTotalAmount,
                     address: address,
                     customer_phone: phone
                 });
+                console.log("Email sent successfully!");
+            } else {
+                throw new Error("EmailJS not defined");
             }
+            
             completeOrder();
         } catch (err) {
-            console.log("Email limit or server error, but WhatsApp sent.");
+            console.error("Email error:", err);
+            // ইমেইল না গেলেও হোয়াটসঅ্যাপ চলে গেছে, তাই অর্ডার সম্পন্ন হবে
             completeOrder();
         }
     });
