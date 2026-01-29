@@ -49,7 +49,9 @@
         .buy-btn { 
             background: var(--primary); color: white; border: none; 
             padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: 600; 
+            transition: 0.3s;
         }
+        .buy-btn:hover { background: var(--accent); }
 
         /* --- FOOTER --- */
         footer { background: var(--primary); color: white; padding: 40px 5%; margin-top: 60px; text-align: center; }
@@ -61,7 +63,6 @@
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
             <a href="gadgets.html" style="color: var(--accent);">Gadgets</a>
             <a href="decor.html">Decor</a>
             <a href="clothing.html">Clothing</a>
@@ -70,15 +71,16 @@
             <input type="text" id="searchGadget" placeholder="Search gadgets..." onkeyup="filterGadgets()">
             <i class="fa fa-search"></i>
         </div>
-        <div style="font-size: 18px; color: var(--primary);">
+        <a href="cart.html" style="font-size: 18px; color: var(--primary); text-decoration: none;">
             <i class="fa fa-shopping-cart"></i>
-        </div>
+        </a>
     </nav>
 
     <div class="container">
         <h2 class="category-title">Smart Gadgets Collection</h2>
         <div id="gadgetList" class="grid">
-            </div>
+            <p style="text-align: center; grid-column: 1/-1;">প্রোডাক্ট লোড হচ্ছে...</p>
+        </div>
     </div>
 
     <footer>
@@ -86,34 +88,48 @@
     </footer>
 
     <script>
+        let allGadgets = []; // সার্চের জন্য ডেটা স্টোর করা
+
         async function loadGadgets() {
-            const res = await fetch('http://localhost:5000/api/products');
-            const products = await res.json();
+            try {
+                const res = await fetch('https://decotech-api.onrender.com/api/products');
+                const products = await res.json();
 
-            // Sudhu 'Gadget' category filter kora hoyeche
-            const gadgets = products.filter(p => p.category === 'Gadget');
+                // শুধুমাত্র 'Gadget' ক্যাটেগরি ফিল্টার করা হচ্ছে (অ্যাডমিন প্যানেলের নামের সাথে মিল রেখে)
+                allGadgets = products.filter(p => p.category === 'Gadget');
 
-            const list = document.getElementById('gadgetList');
-            list.innerHTML = gadgets.map(p => `
-                <div class="card reveal">
-                    <img src="${p.image}">
-                    <div class="info">
-                        <h3>${p.name}</h3>
-                        <div class="price">৳ ${p.price}</div>
-                        <button class="buy-btn">Add to Cart</button>
+                const list = document.getElementById('gadgetList');
+                if (allGadgets.length === 0) {
+                    list.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">এই মুহূর্তে কোন গ্যাজেট নেই।</p>';
+                    return;
+                }
+
+                list.innerHTML = allGadgets.map(p => `
+                    <div class="card reveal">
+                        <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300x200?text=Gadget'">
+                        <div class="info">
+                            <h3>${p.name}</h3>
+                            <div class="price">৳ ${p.price}</div>
+                            <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
 
-            // Scroll Animation Trigger
-            ScrollReveal().reveal('.reveal', { 
-                distance: '40px', 
-                duration: 800, 
-                origin: 'bottom', 
-                interval: 150 
-            });
+                // Scroll Animation
+                ScrollReveal().reveal('.reveal', { 
+                    distance: '40px', 
+                    duration: 800, 
+                    origin: 'bottom', 
+                    interval: 150 
+                });
+
+            } catch (err) {
+                console.error("Gadgets loading failed:", err);
+                document.getElementById('gadgetList').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">সার্ভার থেকে ডেটা লোড করতে সমস্যা হয়েছে।</p>';
+            }
         }
 
+        // সার্চ ফাংশন
         function filterGadgets() {
             let input = document.getElementById('searchGadget').value.toLowerCase();
             let cards = document.getElementsByClassName('card');
@@ -123,25 +139,24 @@
             }
         }
 
-        loadGadgets();
+        // কার্ট ফাংশন
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            // চেক করা হচ্ছে প্রোডাক্টটি অলরেডি কার্টে আছে কি না
+            let existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, image, quantity: 1 });
+            }
 
-        async function displayGadgets() {
-    const res = await fetch('https://decotech-api.onrender.com/api/products');
-    const allProducts = await res.json();
-    
-    // শুধুমাত্র Gadget ক্যাটেগরি ফিল্টার করা হচ্ছে
-    const gadgets = allProducts.filter(p => p.category === 'Gadget');
-    
-    const container = document.getElementById('gadgetContainer');
-    container.innerHTML = gadgets.map(p => `
-        <div class="product-card">
-            <img src="${p.image}">
-            <h3>${p.name}</h3>
-            <p>৳${p.price}</p>
-        </div>
-    `).join('');
-}
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(name + " কার্টে যোগ করা হয়েছে!");
+        }
+
+        // পেজ লোড হলে ফাংশন রান করবে
+        loadGadgets();
     </script>
 </body>
-
 </html>
