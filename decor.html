@@ -12,7 +12,7 @@
         :root { --primary: #004d40; --accent: #ff9800; --bg: #fdfcfb; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); overflow-x: hidden; }
 
-        /* NAVBAR & FOOTER STYLES (Same as Gadgets for consistency) */
+        /* NAVBAR & FOOTER STYLES */
         nav { background: white; padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 24px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
@@ -20,6 +20,7 @@
         .nav-links a:hover { color: var(--accent); }
         .search-box { position: relative; width: 220px; }
         .search-box input { width: 100%; padding: 8px 30px 8px 12px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
+        .search-box i { position: absolute; right: 10px; top: 10px; color: #888; }
         
         /* DECOR GRID */
         .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
@@ -32,7 +33,8 @@
         .card:hover { transform: scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 300px; object-fit: cover; }
         .info { padding: 20px; text-align: center; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 15px; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 15px; transition: 0.3s; }
+        .buy-btn:hover { background: var(--accent); }
 
         footer { background: var(--primary); color: white; padding: 40px 5%; margin-top: 80px; text-align: center; }
     </style>
@@ -43,12 +45,17 @@
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
         <div class="nav-links">
             <a href="index.html">Home</a>
-            <a href="shop.html">Shop</a>
             <a href="gadgets.html">Gadgets</a>
             <a href="decor.html" style="color: var(--accent);">Decor</a>
             <a href="clothing.html">Clothing</a>
         </div>
-        <div class="search-box"><input type="text" placeholder="Search decor..." id="searchDecor" onkeyup="filterProducts('searchDecor')"><i class="fa fa-search"></i></div>
+        <div class="search-box">
+            <input type="text" placeholder="Search decor..." id="searchDecor" onkeyup="filterDecor()">
+            <i class="fa fa-search"></i>
+        </div>
+        <a href="cart.html" style="font-size: 18px; color: var(--primary); text-decoration: none; margin-left: 15px;">
+            <i class="fa fa-shopping-cart"></i>
+        </a>
     </nav>
 
     <div class="container">
@@ -56,30 +63,74 @@
             <h1>Elegant Home Decor</h1>
             <p>Make your home a reflection of your style.</p>
         </div>
-        <div id="decorList" class="grid"></div>
+        <div id="decorList" class="grid">
+            <p style="text-align: center; grid-column: 1/-1;">ডেকোর আইটেম লোড হচ্ছে...</p>
+        </div>
     </div>
 
     <footer><p>&copy; 2026 DecoTech | Aesthetics at Your Doorstep</p></footer>
 
     <script>
         async function loadDecor() {
-            const res = await fetch('http://localhost:5000/api/products');
-            const products = await res.json();
-            const decor = products.filter(p => p.category === 'Decor');
-            document.getElementById('decorList').innerHTML = decor.map(p => `
-                <div class="card reveal-item">
-                    <img src="${p.image}">
-                    <div class="info">
-                        <h3>${p.name}</h3>
-                        <div style="color:var(--accent); font-weight:700; font-size:1.2rem;">৳ ${p.price}</div>
-                        <button class="buy-btn">Add to Cart</button>
-                    </div>
-                </div>
-            `).join('');
+            try {
+                // অনলাইন এপিআই লিঙ্ক ব্যবহার করা হয়েছে
+                const res = await fetch('https://decotech-api.onrender.com/api/products');
+                const products = await res.json();
+                
+                // শুধুমাত্র 'Decor' ক্যাটেগরি ফিল্টার করা হচ্ছে
+                const decor = products.filter(p => p.category === 'Decor');
+                
+                const list = document.getElementById('decorList');
+                if(decor.length === 0) {
+                    list.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">এই মুহূর্তে কোন ডেকোর আইটেম নেই।</p>';
+                    return;
+                }
 
-            ScrollReveal().reveal('.reveal', { duration: 1500, origin: 'top', distance: '50px' });
-            ScrollReveal().reveal('.reveal-item', { duration: 1000, origin: 'bottom', distance: '30px', interval: 200 });
+                list.innerHTML = decor.map(p => `
+                    <div class="card reveal-item">
+                        <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300x400?text=Decor+Item'">
+                        <div class="info">
+                            <h3>${p.name}</h3>
+                            <div style="color:var(--accent); font-weight:700; font-size:1.2rem;">৳ ${p.price}</div>
+                            <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                ScrollReveal().reveal('.reveal', { duration: 1500, origin: 'top', distance: '50px' });
+                ScrollReveal().reveal('.reveal-item', { duration: 1000, origin: 'bottom', distance: '30px', interval: 200 });
+            
+            } catch (err) {
+                console.error("Decor loading failed:", err);
+                document.getElementById('decorList').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">সার্ভার থেকে ডেটা পাওয়া যায়নি।</p>';
+            }
         }
+
+        // সার্চ ফাংশন
+        function filterDecor() {
+            let input = document.getElementById('searchDecor').value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+            for (let card of cards) {
+                let name = card.getElementsByTagName('h3')[0].innerText.toLowerCase();
+                card.style.display = name.includes(input) ? "block" : "none";
+            }
+        }
+
+        // কার্ট ফাংশন
+        function addToCart(name, price, image) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            let existingItem = cart.find(item => item.name === name);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, image, quantity: 1 });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert(name + " কার্টে যোগ হয়েছে!");
+        }
+
         loadDecor();
     </script>
 </body>
