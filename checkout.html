@@ -3,106 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চেকআউট | DecoTech</title>
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>নিরাপদ চেকআউট | DecoTech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            emailjs.init({
-                publicKey: "WnceGWWVztvV9vkRD", // আপনার পাবলিক কি
-            });
+            emailjs.init({ publicKey: "WnceGWWVztvV9vkRD" });
         })();
     </script>
 
     <style>
-        :root { --primary: #004d40; --accent: #c09b5d; --bg: #f8faf9; }
-        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; }
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .logo span { color: #ff9800; }
-        .checkout-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
-        h2 { font-size: 20px; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
-        .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .method-box { border: 2px solid #eee; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.3s; }
-        .method-box.active { border-color: var(--accent); background: #fdfaf5; }
-        .method-box i { font-size: 20px; margin-bottom: 5px; display: block; }
-        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: #666; }
-        .total-price { font-size: 22px; font-weight: 700; color: #1d4ed8; }
-        .confirm-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 30px; transition: 0.3s; }
-        .confirm-btn:disabled { background: #ccc; cursor: not-allowed; }
-        @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } }
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #f4f7f6; --white: #ffffff; }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; }
+        
+        nav { background: white; padding: 15px 7%; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 24px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .logo span { color: var(--accent); }
 
-        /* সাকসেস মেসেজ স্টাইল */
-        .success-message-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-        .success-message-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
-        .success-message-box {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        }
-        .success-message-overlay.show .success-message-box {
-            transform: scale(1);
-        }
-        .success-message-box h3 {
-            color: var(--primary);
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-        .success-message-box p {
-            color: #555;
-            font-size: 16px;
-            margin-bottom: 25px;
-        }
-        .success-message-box .order-id-display {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ff9800;
-            margin-bottom: 25px;
-            display: block;
-        }
-        .success-message-box button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .success-message-box button:hover {
-            background: #003d33;
-        }
+        .checkout-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        h2 { font-size: 18px; margin-bottom: 20px; color: var(--primary); display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; color: #555; }
+        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; transition: 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(0,77,64,0.1); }
+
+        /* Payment Section */
+        .payment-methods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .method-box { border: 2px solid #f0f0f0; padding: 12px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.3s; grayscale: 100%; opacity: 0.7; }
+        .method-box.active { border-color: var(--accent); background: #fffcf5; grayscale: 0; opacity: 1; transform: translateY(-2px); }
+        .method-box i { font-size: 20px; margin-bottom: 5px; display: block; color: var(--primary); }
+        
+        .payment-info { background: #fff9f0; padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); font-size: 14px; margin-top: 10px; display: none; }
+
+        /* Summary */
+        .order-summary { position: sticky; top: 100px; height: fit-content; }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .total-price { font-size: 20px; font-weight: 700; color: var(--primary); border-top: 2px dashed #eee; padding-top: 15px; margin-top: 15px; }
+
+        .confirm-btn { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 10px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,77,64,0.2); }
+        .confirm-btn:hover { background: #003d33; transform: translateY(-2px); }
+        
+        /* Success Overlay */
+        .success-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; place-items: center; z-index: 2000; padding: 20px; }
+        .success-card { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        @media (max-width: 850px) { .checkout-container { grid-template-columns: 1fr; } .order-summary { position: static; } }
     </style>
 </head>
 <body>
@@ -113,197 +65,174 @@
 
 <div class="checkout-container">
     <div class="card">
-        <h2>শিপিং ঠিকানা</h2>
+        <h2><i class="fas fa-map-marker-alt"></i> শিপিং তথ্য</h2>
         <form id="orderForm">
             <div class="form-group">
-                <label>আপনার পূর্ণ নাম</label>
-                <input type="text" id="name" placeholder="যেমন: আবদুর রহমান" required>
+                <label>আপনার নাম</label>
+                <input type="text" id="name" placeholder="আপনার নাম লিখুন" required>
             </div>
-            <div class="form-row">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                 <div class="form-group">
                     <label>ফোন নম্বর</label>
-                    <input type="tel" id="phone" placeholder="017XXXXXXXX" required>
+                    <input type="tel" id="phone" placeholder="017XXXXXXXX" pattern="[0-9]{11}" required title="১১ ডিজিটের মোবাইল নম্বর দিন">
                 </div>
                 <div class="form-group">
-                    <label>ইমেইল (অর্ডার রিসিট পেতে)</label>
-                    <input type="email" id="email" placeholder="name@example.com" required>
+                    <label>এলাকা</label>
+                    <select id="location" onchange="updateShipping()" required>
+                        <option value="60">ঢাকার ভিতরে</option>
+                        <option value="120">ঢাকার বাইরে</option>
+                    </select>
                 </div>
             </div>
             <div class="form-group">
-                <label>পূর্ণ ঠিকানা</label>
-                <textarea id="address" rows="3" placeholder="বাসা নং, রোড নং, এলাকা, জেলা" required></textarea>
+                <label>বিস্তারিত ঠিকানা</label>
+                <textarea id="address" rows="3" placeholder="বাসা নং, রোড, এলাকা, জেলা" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>ইমেইল (ঐচ্ছিক)</label>
+                <input type="email" id="email" placeholder="example@mail.com">
             </div>
 
-            <h2 style="margin-top: 40px;">পেমেন্ট পদ্ধতি</h2>
+            <h2 style="margin-top: 30px;"><i class="fas fa-credit-card"></i> পেমেন্ট পদ্ধতি</h2>
             <div class="payment-methods">
                 <div class="method-box active" onclick="selectPayment('Cash on Delivery', this)">
-                    <i class="fas fa-truck"></i> ক্যাশ অন ডেলিভারি
+                    <i class="fas fa-truck"></i> COD
                 </div>
-                <div class="method-box" onclick="selectPayment('BKASH', this)">
-                    <i class="fas fa-mobile-alt"></i> বিকাশ
+                <div class="method-box" onclick="selectPayment('Bkash', this)">
+                    <i class="fas fa-mobile-alt"></i> Bkash
                 </div>
-                <div class="method-box" onclick="selectPayment('NAGAD', this)">
-                    <i class="fas fa-wallet"></i> নগদ
+                <div class="method-box" onclick="selectPayment('Nagad', this)">
+                    <i class="fas fa-wallet"></i> Nagad
                 </div>
             </div>
 
-            <button type="submit" id="submitBtn" class="confirm-btn">অর্ডার কনফার্ম করুন</button>
+            <div id="onlinePaymentInfo" class="payment-info">
+                <p>আমাদের পার্সোনাল নাম্বার: <strong>01778899326</strong></p>
+                <p style="font-size: 12px; color: #666;">টাকা পাঠিয়ে রেফারেন্স হিসেবে আপনার নাম লিখুন।</p>
+            </div>
+
+            <button type="submit" id="submitBtn" class="confirm-btn">অর্ডার সম্পন্ন করুন</button>
         </form>
     </div>
 
-    <div class="order-summary card">
-        <h3>আপনার অর্ডার</h3>
+    <div class="card order-summary">
+        <h2><i class="fas fa-shopping-bag"></i> আপনার অর্ডার</h2>
         <div id="orderItems"></div>
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        <div class="summary-row">
+        <div class="summary-item" style="margin-top: 20px;">
             <span>সাব-টোটাল:</span>
             <span id="subtotal">৳ ০</span>
         </div>
-        <div class="summary-row">
+        <div class="summary-item">
             <span>ডেলিভারি চার্জ:</span>
-            <span>৳ ৬০</span>
+            <span id="shippingCharge">৳ ৬০</span>
         </div>
-        <div class="summary-row total-price" style="border-top: 2px solid #eee; padding-top: 15px; margin-top: 10px;">
-            <span>মোট দেয়:</span>
+        <div class="summary-item total-price">
+            <span>মোট:</span>
             <span id="totalDisplay">৳ ৬০</span>
         </div>
     </div>
 </div>
 
-<div id="successMessageOverlay" class="success-message-overlay">
-    <div class="success-message-box">
-        <i class="fas fa-check-circle" style="color: var(--primary); font-size: 50px; margin-bottom: 20px;"></i>
-        <h3>অর্ডার সফল হয়েছে!</h3>
-        <p>আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে।</p>
-        <span class="order-id-display" id="displayedOrderId"></span>
-        <p style="font-size: 14px; color: #777;">অর্ডার সংক্রান্ত বিস্তারিত তথ্য আপনার ইমেইলে (Spam ফোল্ডারসহ) পাঠানো হয়েছে।</p>
-        <button onclick="redirectToHome()">হোমপেজে ফিরে যান</button>
+<div id="successOverlay" class="success-overlay">
+    <div class="success-card">
+        <i class="fas fa-check-circle" style="color: var(--primary); font-size: 60px; margin-bottom: 20px;"></i>
+        <h3 style="margin: 0; color: var(--primary);">অর্ডার সফল হয়েছে!</h3>
+        <p id="orderIdText" style="font-weight: bold; color: var(--accent); margin: 15px 0;"></p>
+        <p style="color: #666; font-size: 14px;">আমাদের প্রতিনিধি খুব শীঘ্রই আপনার ঠিকানায় পণ্য পৌঁছে দিবে।</p>
+        <button onclick="location.href='index.html'" class="confirm-btn">হোমে ফিরে যান</button>
     </div>
 </div>
 
 <script>
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let selectedPayment = 'Cash on Delivery';
-    let finalTotalAmount = 0;
-
-    function generateOrderID() {
-        const timestamp = Date.now().toString().slice(-4);
-        const random = Math.floor(1000 + Math.random() * 9000);
-        return `DT-${timestamp}${random}`;
-    }
+    let subtotal = 0;
 
     function renderSummary() {
         const itemContainer = document.getElementById('orderItems');
-        let subtotal = 0;
+        subtotal = 0;
+        
         if(cart.length === 0) {
-            itemContainer.innerHTML = '<p style="color:red;">কার্ট খালি!</p>';
+            itemContainer.innerHTML = '<p>আপনার কার্ট খালি!</p>';
             return;
         }
+
         itemContainer.innerHTML = cart.map(item => {
-            const price = parseInt(item.price) || 0;
-            const qty = item.quantity || 1;
-            subtotal += (price * qty);
-            return `<div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px;">
-                    <span>${item.name} x ${qty}</span>
-                    <span>৳ ${price * qty}</span>
+            const itemPrice = parseInt(item.price) * (item.quantity || 1);
+            subtotal += itemPrice;
+            return `
+                <div class="summary-item">
+                    <span>${item.name} (x${item.quantity || 1})</span>
+                    <span>৳ ${itemPrice}</span>
                 </div>`;
         }).join('');
-        finalTotalAmount = subtotal + 60;
+        
+        updateShipping();
+    }
+
+    function updateShipping() {
+        const shipping = parseInt(document.getElementById('location').value);
         document.getElementById('subtotal').innerText = `৳ ${subtotal}`;
-        document.getElementById('totalDisplay').innerText = `৳ ${finalTotalAmount}`;
+        document.getElementById('shippingCharge').innerText = `৳ ${shipping}`;
+        document.getElementById('totalDisplay').innerText = `৳ ${subtotal + shipping}`;
     }
 
     function selectPayment(type, element) {
         selectedPayment = type;
         document.querySelectorAll('.method-box').forEach(box => box.classList.remove('active'));
         element.classList.add('active');
-    }
-
-    async function redirectToHome() {
-        // এখানে সরাসরি index.html এ রিডাইরেক্ট করা হচ্ছে
-        window.location.href = 'index.html';
+        
+        const infoBox = document.getElementById('onlinePaymentInfo');
+        infoBox.style.display = (type === 'Bkash' || type === 'Nagad') ? 'block' : 'none';
     }
 
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        const orderId = generateOrderID();
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const customer_email = document.getElementById('email').value;
-        const address = document.getElementById('address').value;
-
-        btn.innerText = "প্রসেসিং হচ্ছে...";
+        const orderId = `DT-${Date.now().toString().slice(-6)}`;
+        const shipping = parseInt(document.getElementById('location').value);
+        
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং...';
         btn.disabled = true;
 
         const orderData = {
             orderID: orderId,
-            customerName: name,
-            phone: phone,
-            email: customer_email,
-            address: address,
-            paymentMethod: selectedPayment,
-            products: cart.map(i => `${i.name} (x${i.quantity || 1})`).join(', '),
-            total: finalTotalAmount
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            address: document.getElementById('address').value,
+            email: document.getElementById('email').value || 'N/A',
+            payment: selectedPayment,
+            items: cart.map(i => `${i.name} (x${i.quantity})`).join(', '),
+            total: subtotal + shipping
         };
 
-        // ১. হোয়াটসঅ্যাপ মেসেজ পাঠানো (আগে পাঠানো ভালো)
+        // WhatsApp redirect in new tab
         sendToWhatsApp(orderData);
 
-        // ২. ইমেইল পাঠানো
+        // Email Notification
         try {
-            const templateParams = {
+            await emailjs.send("service_qbtls6p", "template_7aca5go", {
                 order_id: orderId,
-                to_name: name,
-                to_email: customer_email,
-                order_details: orderData.products,
-                total_price: finalTotalAmount,
-                address: address,
-                customer_phone: phone
-            };
-
-            await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
-            console.log("Email Sent Successfully!");
-
-        } catch (err) {
-            console.error("EmailJS Error:", err);
-            // ইমেইল পাঠাতে সমস্যা হলেও আমরা কাস্টমারকে সফল মেসেজ দেখাবো
-        } finally {
-            // কনফেটি এনিমেশন দেখানো
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 }
+                to_name: orderData.name,
+                to_email: orderData.email,
+                order_details: orderData.items,
+                total_price: orderData.total,
+                address: orderData.address,
+                customer_phone: orderData.phone
             });
+        } catch (err) { console.error("Email Error", err); }
 
-            // সাকসেস মেসেজ বক্স দেখানো
-            document.getElementById('displayedOrderId').innerText = `অর্ডার আইডি: ${orderId}`;
-            document.getElementById('successMessageOverlay').classList.add('show');
-            localStorage.removeItem('cart');
-            btn.innerText = "অর্ডার কনফার্ম করুন"; // বাটন রিসেট
-            btn.disabled = false; // বাটন রিসেট
-        }
+        // Final UI Update
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        document.getElementById('orderIdText').innerText = `আইডি: ${orderId}`;
+        document.getElementById('successOverlay').style.display = 'grid';
+        localStorage.removeItem('cart');
     });
 
-    function sendToWhatsApp(data) {
-        const adminNumber = "8801778899326"; 
-        let msg = `🛍️ *NEW ORDER - DECOTECH* 🛍️%0A`;
-        msg += `━━━━━━━━━━━━━━━━━━%0A`;
-        msg += `🆔 *Order ID:* ${data.orderID}%0A%0A`; 
-        msg += `👤 *Customer Details:*%0A`;
-        msg += `┌ *Name:* ${data.customerName}%0A`;
-        msg += `├ *Phone:* ${data.phone}%0A`;
-        msg += `└ *Address:* ${data.address}%0A%0A`;
-        msg += `🛒 *Order Summary:*%0A`;
-        msg += `_${data.products}_%0A%0A`;
-        msg += `💰 *Payment Info:*%0A`;
-        msg += `┌ *Method:* ${data.paymentMethod}%0A`;
-        msg += `└ *Total Amount:* ৳${data.total}%0A%0A`;
-        msg += `━━━━━━━━━━━━━━━━━━%0A`;
-        msg += `✅ *Confirm the order!*`;
-
-        const url = `https://wa.me/${adminNumber}?text=${msg}`;
-        window.open(url, '_blank');
+    function sendToWhatsApp(d) {
+        const adminPhone = "8801778899326";
+        const msg = `*New Order - DecoTech*%0A---%0AID: ${d.orderID}%0AName: ${d.name}%0APhone: ${d.phone}%0AAddress: ${d.address}%0AItems: ${d.items}%0APayment: ${d.payment}%0ATotal: ৳${d.total}`;
+        window.open(`https://wa.me/${adminPhone}?text=${msg}`, '_blank');
     }
 
     renderSummary();
