@@ -8,10 +8,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; }
+        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --success: #2ecc71; }
         body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: #333; overflow-x: hidden; }
 
-        /* --- 1. PRO PRELOADER --- */
+        /* --- PRO PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
         .loader-logo { font-size: 30px; font-weight: 800; color: var(--primary); margin-bottom: 15px; animation: pulse 1.5s infinite; }
         .loader-logo span { color: var(--accent); }
@@ -20,48 +20,50 @@
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
 
+        /* --- Toast Notification --- */
+        #toast-container { position: fixed; bottom: 100px; left: 20px; z-index: 9999; }
+        .toast { background: white; color: #333; padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--success); transform: translateX(-120%); transition: 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .toast.show { transform: translateX(0); }
+        .toast i { color: var(--success); font-size: 20px; }
+
         /* --- Navbar & Search --- */
         nav { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
         .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; min-width: 150px; }
         .logo span { color: var(--accent); }
-        
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: #444; font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
-
         .dropdown { position: relative; display: inline-block; }
         .dropbtn { cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .dropdown-content { display: none; position: absolute; background-color: white; min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; top: 100%; }
         .dropdown-content a { color: #333; padding: 12px 16px; display: block; border-bottom: 1px solid #eee; margin: 0; }
         .dropdown-content a:hover { background-color: #f9f9f9; border-radius: 8px; }
         .dropdown:hover .dropdown-content { display: block; }
-
         .search-container { position: relative; margin-left: 20px; }
         .search-container input { padding: 8px 35px 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; width: 180px; transition: 0.3s; }
         .search-container input:focus { width: 250px; border-color: var(--accent); }
         .search-container i { position: absolute; right: 12px; top: 10px; color: #888; cursor: pointer; }
         
-        /* --- Modern Hero Banner --- */
-        .hero { 
-            height: 550px; 
-            background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); 
-            background-size: cover; background-position: center; 
-            display: flex; align-items: center; justify-content: flex-start; 
-            color: white; padding: 0 10%; position: relative; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-        }
+        /* --- Hero Banner --- */
+        .hero { height: 550px; background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: flex-start; color: white; padding: 0 10%; position: relative; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
         .hero-content { max-width: 600px; animation: fadeInUp 1s ease; }
         .hero h1 { font-size: 55px; margin: 0; line-height: 1.1; font-weight: 700; }
         .hero p { font-size: 20px; margin: 20px 0 30px; opacity: 0.9; }
         .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,152,0,0.4); display: inline-block; }
         .hero-btn:hover { background: #e68900; transform: translateY(-3px); }
-
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Trust Badges --- */
+        .trust-badges { display: flex; justify-content: space-around; padding: 40px 5%; background: white; margin-top: -30px; position: relative; z-index: 10; border-radius: 15px; max-width: 1000px; margin-left: auto; margin-right: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .badge-item { text-align: center; }
+        .badge-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
+        .badge-item p { margin: 0; font-weight: 600; font-size: 14px; }
+        .badge-item span { font-size: 12px; color: #888; }
 
         /* --- Products Grid --- */
         .section-title { text-align: center; margin: 80px 0 40px; font-size: 32px; color: var(--primary); }
         .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 20px; }
-        
-        .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; }
+        .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; position: relative; }
         .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
         .card img { width: 100%; height: 240px; object-fit: cover; transition: 0.5s; }
         .card:hover img { scale: 1.05; }
@@ -71,18 +73,10 @@
         .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; }
         .buy-btn:hover { background: var(--accent); }
 
-        /* --- 2. FLOATING WHATSAPP BUTTON --- */
+        /* --- Floating WhatsApp --- */
         .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; text-align: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s; animation: bounce 2s infinite; }
         .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
-
-        /* --- Reviews --- */
-        .review-section { max-width: 800px; margin: 100px auto; padding: 0 20px; }
-        .review-box { background: var(--white); padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
-        .star-input i { font-size: 22px; color: #ddd; cursor: pointer; margin-right: 5px; }
-        .star-input i.active { color: var(--accent); }
-        textarea { width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; margin-top: 15px; resize: none; box-sizing: border-box; }
-        .post-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; margin-top: 10px; font-weight: 600; }
 
         /* --- Footer --- */
         footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 100px; }
@@ -105,9 +99,10 @@
     </div>
 </div>
 
+<div id="toast-container"></div>
+
 <nav>
     <a href="index.html" class="logo">Deco<span>Tech</span></a>
-    
     <div class="nav-links">
         <a href="index.html">Home</a>
         <div class="dropdown">
@@ -121,7 +116,6 @@
         <a href="about.html">About</a>
         <a href="contact.html">Contact Us</a>
     </div>
-
     <div style="display: flex; align-items: center;">
         <div class="search-container">
             <input type="text" id="mainSearch" placeholder="Search products..." onkeyup="searchProduct()">
@@ -139,6 +133,24 @@
         <h1>Elevate Your <br>Lifestyle Decor.</h1>
         <p>Discover a curated collection of premium gadgets and aesthetic home decor designed for modern living.</p>
         <a href="shop.html" class="hero-btn">Explore Collection <i class="fa fa-arrow-right"></i></a>
+    </div>
+</div>
+
+<div class="trust-badges">
+    <div class="badge-item">
+        <i class="fas fa-shipping-fast"></i>
+        <p>Free Shipping</p>
+        <span>On orders over ৳৫০০০</span>
+    </div>
+    <div class="badge-item">
+        <i class="fas fa-undo"></i>
+        <p>Easy Returns</p>
+        <span>7-day return policy</span>
+    </div>
+    <div class="badge-item">
+        <i class="fas fa-shield-alt"></i>
+        <p>Secure Payment</p>
+        <span>100% secure checkout</span>
     </div>
 </div>
 
@@ -203,7 +215,6 @@
 <script>
     const apiURL = 'https://decotech-api.onrender.com/api/products';
 
-    // Preloader Control
     window.addEventListener('load', function() {
         const preloader = document.getElementById('preloader');
         setTimeout(() => {
@@ -212,13 +223,25 @@
         }, 1500);
     });
 
-    // 1. Fetch Products
+    // --- Toast Function ---
+    function showToast(message) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }, 3000);
+    }
+
     async function fetchProducts() {
         try {
             const res = await fetch(apiURL);
             const products = await res.json();
             const list = document.getElementById('productList');
-            
             list.innerHTML = products.slice(0, 8).map(p => `
                 <div class="card">
                     <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/400x300?text=Product'">
@@ -230,11 +253,10 @@
                 </div>
             `).join('');
         } catch (err) {
-            document.getElementById('productList').innerHTML = "<p>Failed to load products. Check connection.</p>";
+            document.getElementById('productList').innerHTML = "<p>Failed to load products.</p>";
         }
     }
 
-    // 2. Search Functionality
     function searchProduct() {
         let input = document.getElementById('mainSearch').value.toLowerCase();
         let cards = document.getElementsByClassName('card');
@@ -244,7 +266,6 @@
         }
     }
 
-    // 3. Cart Logic
     function addToCart(name, price, image) {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let item = cart.find(i => i.name === name);
@@ -252,9 +273,7 @@
         else cart.push({name, price, image, quantity: 1});
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
-        
-        // Custom Alert or Toast would be better, but keeping it simple
-        alert(name + " added to cart!");
+        showToast(`${name} added to cart!`);
     }
 
     function updateCartCount() {
@@ -262,7 +281,7 @@
         document.getElementById('cartCount').innerText = cart.reduce((acc, curr) => acc + curr.quantity, 0);
     }
 
-    // 4. Star Rating Logic
+    // Star Rating
     const stars = document.querySelectorAll('#starInput i');
     stars.forEach(star => {
         star.addEventListener('click', function() {
@@ -285,10 +304,10 @@
             </div>`;
             document.getElementById('reviewList').insertAdjacentHTML('afterbegin', html);
             document.getElementById('revName').value = ''; document.getElementById('revText').value = '';
+            showToast("Review submitted!");
         }
     }
 
-    // 5. Live Clock
     function updateClock() {
         const now = new Date();
         document.getElementById('liveClock').innerHTML = `<i class="fa fa-calendar-alt"></i> ${now.toLocaleDateString()} | <i class="fa fa-clock"></i> ${now.toLocaleTimeString()}`;
