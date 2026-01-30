@@ -5,158 +5,226 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gadgets Collection | DecoTech</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://unpkg.com/scrollreveal"></script>
 
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --bg: #f8faf9; }
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--bg); overflow-x: hidden; }
+        :root { --primary: #004d40; --accent: #ff9800; --bg: #f4f7f6; --white: #ffffff; --dark: #1a1a1a; }
+        body { font-family: 'Poppins', 'Hind Siliguri', sans-serif; margin: 0; background: var(--bg); color: #333; overflow-x: hidden; }
 
-        /* --- NAVBAR --- */
-        nav { 
-            background: white; padding: 12px 5%; display: flex; 
-            align-items: center; justify-content: space-between; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; 
-        }
-        .logo { font-size: 24px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        /* --- NAVIGATION BAR (Unified Design) --- */
+        header { background: var(--white); box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .navbar { display: flex; align-items: center; justify-content: space-between; padding: 15px 7%; max-width: 1400px; margin: auto; }
+        .logo { font-size: 28px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
-        .nav-links a { text-decoration: none; color: #333; margin: 0 10px; font-weight: 500; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent); }
-        
-        .search-box { position: relative; width: 200px; }
-        .search-box input { width: 100%; padding: 8px 30px 8px 12px; border-radius: 20px; border: 1px solid #ddd; outline: none; }
-        .search-box i { position: absolute; right: 10px; top: 10px; color: #888; }
 
-        /* --- PRODUCT SECTION --- */
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .category-title { border-left: 5px solid var(--accent); padding-left: 15px; margin-bottom: 30px; color: var(--primary); }
-        
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px; }
+        .nav-menu { display: flex; list-style: none; gap: 25px; margin: 0; padding: 0; }
+        .nav-menu a { text-decoration: none; color: #333; font-weight: 500; font-size: 15px; transition: 0.3s; }
+        .nav-menu a:hover, .nav-menu a.active { color: var(--accent); }
 
-        /* ANIMATED CARD */
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .search-box { position: relative; width: 220px; }
+        .search-box input { width: 100%; padding: 10px 35px 10px 15px; border-radius: 25px; border: 1.5px solid #eee; outline: none; transition: 0.3s; font-size: 14px; }
+        .search-box input:focus { border-color: var(--primary); background: #fff; }
+        .search-box i { position: absolute; right: 12px; top: 12px; color: #888; }
+
+        .cart-icon { position: relative; font-size: 20px; color: var(--primary); text-decoration: none; }
+        #cartCount { position: absolute; top: -10px; right: -12px; background: var(--accent); color: white; font-size: 11px; padding: 2px 6px; border-radius: 50%; font-weight: bold; }
+
+        /* --- GADGET SECTION --- */
+        .container { max-width: 1300px; margin: 50px auto; padding: 0 20px; }
+        .category-header { text-align: center; margin-bottom: 50px; }
+        .category-header h2 { font-size: 36px; color: var(--primary); font-family: 'Hind Siliguri'; margin-bottom: 10px; }
+        .category-header .underline { width: 80px; height: 4px; background: var(--accent); margin: 0 auto; border-radius: 2px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+
+        /* PREMIUM PRODUCT CARD */
         .card { 
-            background: white; border-radius: 12px; overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.4s ease; 
+            background: var(--white); border-radius: 20px; overflow: hidden; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.4s ease; 
+            border: 1px solid #eee; position: relative;
         }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 220px; object-fit: cover; transition: 0.5s; }
-        .card:hover img { transform: scale(1.05); }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.1); border-color: #ddd; }
         
-        .info { padding: 15px; text-align: center; }
-        .price { font-size: 18px; font-weight: 700; color: var(--primary); margin: 8px 0; }
+        .image-box { position: relative; width: 100%; height: 260px; overflow: hidden; background: #f9f9f9; }
+        .card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s ease; }
+        .card:hover img { transform: scale(1.1); }
+        
+        .info { padding: 25px; text-align: center; }
+        .info h3 { margin: 0 0 10px; font-size: 19px; color: var(--dark); font-weight: 600; font-family: 'Poppins'; }
+        .price { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 20px; }
+        
         .buy-btn { 
             background: var(--primary); color: white; border: none; 
-            padding: 10px; width: 100%; border-radius: 6px; cursor: pointer; font-weight: 600; 
-            transition: 0.3s;
+            padding: 14px; width: 100%; border-radius: 12px; cursor: pointer; 
+            font-weight: 600; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px;
         }
-        .buy-btn:hover { background: var(--accent); }
+        .buy-btn:hover { background: var(--accent); transform: scale(1.02); }
 
-        /* --- FOOTER --- */
-        footer { background: var(--primary); color: white; padding: 40px 5%; margin-top: 60px; text-align: center; }
+        /* --- FOOTER (Unified Design) --- */
+        footer { background: var(--dark); color: #bbb; padding: 80px 7% 30px; margin-top: 100px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; max-width: 1300px; margin: auto; }
+        .footer-box h3 { color: white; margin-bottom: 25px; font-size: 18px; position: relative; }
+        .footer-box h3::after { content: ''; position: absolute; left: 0; bottom: -8px; width: 40px; height: 2px; background: var(--accent); }
+        .footer-box a { display: block; color: #bbb; text-decoration: none; margin-bottom: 12px; transition: 0.3s; font-size: 14px; }
+        .footer-box a:hover { color: var(--accent); padding-left: 5px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); margin-top: 50px; padding-top: 25px; text-align: center; font-size: 13px; }
+
+        /* LOADING ANIMATION */
+        .loader { text-align: center; grid-column: 1/-1; padding: 50px; }
+        .spinner { width: 45px; height: 45px; border: 4px solid #eee; border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 850px) { .nav-menu { display: none; } .navbar { padding: 15px 5%; } .search-box { width: 160px; } }
     </style>
 </head>
 <body>
 
-    <nav>
+<header>
+    <nav class="navbar">
         <a href="index.html" class="logo">Deco<span>Tech</span></a>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="gadgets.html" style="color: var(--accent);">Gadgets</a>
-            <a href="decor.html">Decor</a>
-            <a href="clothing.html">Clothing</a>
+        <ul class="nav-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop</a></li>
+            <li><a href="gadgets.html" class="active">Gadgets</a></li>
+            <li><a href="decor.html">Decor</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <div class="nav-actions">
+            <div class="search-box">
+                <input type="text" id="searchGadget" placeholder="গ্যাজেট খুঁজুন..." onkeyup="filterGadgets()">
+                <i class="fa fa-search"></i>
+            </div>
+            <a href="cart.html" class="cart-icon">
+                <i class="fa fa-shopping-bag"></i>
+                <span id="cartCount">0</span>
+            </a>
         </div>
-        <div class="search-box">
-            <input type="text" id="searchGadget" placeholder="Search gadgets..." onkeyup="filterGadgets()">
-            <i class="fa fa-search"></i>
-        </div>
-        <a href="cart.html" style="font-size: 18px; color: var(--primary); text-decoration: none;">
-            <i class="fa fa-shopping-cart"></i>
-        </a>
     </nav>
+</header>
 
-    <div class="container">
-        <h2 class="category-title">Smart Gadgets Collection</h2>
-        <div id="gadgetList" class="grid">
-            <p style="text-align: center; grid-column: 1/-1;">প্রোডাক্ট লোড হচ্ছে...</p>
+<div class="container">
+    <div class="category-header">
+        <h2>Smart Gadgets Collection</h2>
+        <div class="underline"></div>
+    </div>
+    
+    <div id="gadgetList" class="grid">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>গ্যাজেট লোড হচ্ছে...</p>
         </div>
     </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 DecoTech | Premium Gadgets & Decor Shop</p>
-    </footer>
+<footer>
+    <div class="footer-grid">
+        <div class="footer-box">
+            <a href="index.html" class="logo" style="color: white; font-size: 24px;">Deco<span>Tech</span></a>
+            <p style="margin-top: 15px; line-height: 1.6;">আপনার নিত্যদিনের জীবনকে সহজ ও স্মার্ট করতে আমরা নিয়ে এসেছি সেরা সব গ্যাজেট কালেকশন।</p>
+        </div>
+        <div class="footer-box">
+            <h3>Explore</h3>
+            <a href="shop.html">All Products</a>
+            <a href="gadgets.html">Latest Gadgets</a>
+            <a href="decor.html">Home Decor</a>
+        </div>
+        <div class="footer-box">
+            <h3>Support</h3>
+            <a href="contact.html">Contact Us</a>
+            <a href="#">Shipping Policy</a>
+            <a href="#">Track Order</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 DecoTech | Premium Gadgets Shop</p>
+    </div>
+</footer>
 
-    <script>
-        let allGadgets = []; // সার্চের জন্য ডেটা স্টোর করা
+<script>
+    let allGadgets = [];
 
-        async function loadGadgets() {
-            try {
-                const res = await fetch('https://decotech-api.onrender.com/api/products');
-                const products = await res.json();
+    async function loadGadgets() {
+        try {
+            const res = await fetch('https://decotech-api.onrender.com/api/products');
+            const products = await res.json();
 
-                // শুধুমাত্র 'Gadget' ক্যাটেগরি ফিল্টার করা হচ্ছে (অ্যাডমিন প্যানেলের নামের সাথে মিল রেখে)
-                allGadgets = products.filter(p => p.category === 'Gadget');
+            // Filter for 'Gadget' or 'Gadgets' category
+            allGadgets = products.filter(p => 
+                p.category === 'Gadget' || p.category === 'Gadgets'
+            );
 
-                const list = document.getElementById('gadgetList');
-                if (allGadgets.length === 0) {
-                    list.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">এই মুহূর্তে কোন গ্যাজেট নেই।</p>';
-                    return;
-                }
-
-                list.innerHTML = allGadgets.map(p => `
-                    <div class="card reveal">
-                        <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300x200?text=Gadget'">
-                        <div class="info">
-                            <h3>${p.name}</h3>
-                            <div class="price">৳ ${p.price}</div>
-                            <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Scroll Animation
-                ScrollReveal().reveal('.reveal', { 
-                    distance: '40px', 
-                    duration: 800, 
-                    origin: 'bottom', 
-                    interval: 150 
-                });
-
-            } catch (err) {
-                console.error("Gadgets loading failed:", err);
-                document.getElementById('gadgetList').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">সার্ভার থেকে ডেটা লোড করতে সমস্যা হয়েছে।</p>';
-            }
-        }
-
-        // সার্চ ফাংশন
-        function filterGadgets() {
-            let input = document.getElementById('searchGadget').value.toLowerCase();
-            let cards = document.getElementsByClassName('card');
-            for (let card of cards) {
-                let name = card.getElementsByTagName('h3')[0].innerText.toLowerCase();
-                card.style.display = name.includes(input) ? "block" : "none";
-            }
-        }
-
-        // কার্ট ফাংশন
-        function addToCart(name, price, image) {
-            let cart = JSON.parse(localStorage.getItem('cart')) || [];
-            
-            // চেক করা হচ্ছে প্রোডাক্টটি অলরেডি কার্টে আছে কি না
-            let existingItem = cart.find(item => item.name === name);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ name, price, image, quantity: 1 });
+            const list = document.getElementById('gadgetList');
+            if (allGadgets.length === 0) {
+                list.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">এই মুহূর্তে কোন গ্যাজেট পাওয়া যায়নি।</p>';
+                return;
             }
 
-            localStorage.setItem('cart', JSON.stringify(cart));
-            alert(name + " কার্টে যোগ করা হয়েছে!");
-        }
+            displayGadgets(allGadgets);
 
-        // পেজ লোড হলে ফাংশন রান করবে
-        loadGadgets();
-    </script>
+        } catch (err) {
+            console.error("Gadgets loading failed:", err);
+            document.getElementById('gadgetList').innerHTML = '<p style="color:red; text-align:center; grid-column:1/-1;">সার্ভার কানেকশন ফেল করেছে!</p>';
+        }
+    }
+
+    function displayGadgets(products) {
+        const list = document.getElementById('gadgetList');
+        list.innerHTML = products.map(p => `
+            <div class="card reveal">
+                <div class="image-box">
+                    <img src="${p.image || p.imageUrl}" alt="${p.name}" onerror="this.src='https://placehold.co/400x400?text=Gadget'">
+                </div>
+                <div class="info">
+                    <h3>${p.name}</h3>
+                    <div class="price">৳ ${p.price}</div>
+                    <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+        ScrollReveal().reveal('.reveal', { 
+            distance: '40px', 
+            duration: 800, 
+            origin: 'bottom', 
+            interval: 150 
+        });
+    }
+
+    function filterGadgets() {
+        let input = document.getElementById('searchGadget').value.toLowerCase();
+        let filtered = allGadgets.filter(p => p.name.toLowerCase().includes(input));
+        displayGadgets(filtered);
+    }
+
+    function addToCart(name, price, image) {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let existingItem = cart.find(item => item.name === name);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ name, price: Number(price), image, quantity: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        alert(name + " সফলভাবে কার্টে যোগ হয়েছে!");
+    }
+
+    function updateCartCount() {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let count = cart.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
+        document.getElementById('cartCount').innerText = count;
+    }
+
+    loadGadgets();
+    updateCartCount();
+</script>
+
 </body>
 </html>
