@@ -30,13 +30,13 @@
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
         @keyframes load { 0% { width: 0%; } 100% { width: 100%; } }
 
-        /* --- Toast --- */
+        /* --- Toast Notification --- */
         #toast-container { position: fixed; bottom: 100px; left: 20px; z-index: 9999; }
         .toast { background: var(--white); color: var(--text); padding: 12px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; border-left: 5px solid var(--success); transform: translateX(-120%); transition: 0.5s; }
         .toast.show { transform: translateX(0); }
 
         /* --- Navbar --- */
-        nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; transition: 0.3s; }
         .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; }
         .logo span { color: var(--accent); }
         .nav-links { display: flex; align-items: center; gap: 20px; }
@@ -48,35 +48,83 @@
 
         /* --- Hero --- */
         .hero { height: 500px; background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; color: white; padding: 0 10%; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
-        .hero h1 { font-size: 50px; margin: 0; }
-        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 20px; }
+        .hero h1 { font-size: 50px; margin: 0; font-weight: 700; line-height: 1.2;}
+        .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 25px; transition: 0.3s;}
+        .hero-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,152,0,0.3); }
 
-        /* --- Modern Review Section --- */
-        .review-section { padding: 80px 5%; background: var(--white); margin-top: 60px; border-radius: 50px 50px 0 0; }
-        .review-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 50px; }
-        .review-box { background: var(--light); padding: 30px; border-radius: 25px; position: sticky; top: 120px; height: fit-content; }
-        .star-input { margin-bottom: 20px; text-align: center; }
-        .star-input i { font-size: 24px; color: #ccc; cursor: pointer; padding: 0 3px; }
-        .star-input i.active { color: var(--accent); }
-        .review-input-group input, .review-input-group textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid #ddd; margin-bottom: 15px; background: var(--white); color: var(--text); font-family: inherit; }
-        .post-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; }
+        /* --- MODERN REVIEW SECTION (FOCUSED WORK) --- */
+        .review-section { padding: 80px 5%; background: var(--white); margin-top: 80px; border-radius: 60px 60px 0 0; box-shadow: 0 -20px 40px rgba(0,0,0,0.02); transition: 0.3s; }
+        .review-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 380px 1fr; gap: 60px; align-items: start; }
+        
+        .review-box { 
+            background: var(--light); 
+            padding: 40px; 
+            border-radius: 30px; 
+            position: sticky; 
+            top: 120px; 
+            height: fit-content;
+            border: 1px solid var(--card-border);
+        }
+        
+        .review-box h2 { font-size: 28px; color: var(--primary); margin-bottom: 10px; text-align: center; }
+        .review-box p { text-align: center; font-size: 14px; opacity: 0.7; margin-bottom: 25px; }
 
-        #reviewList { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .review-card { background: var(--light); padding: 25px; border-radius: 20px; position: relative; animation: fadeIn 0.5s ease; }
-        .rev-user-info { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
-        .user-avatar { width: 45px; height: 45px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-        .stars { color: var(--accent); font-size: 12px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .star-input { margin-bottom: 25px; text-align: center; }
+        .star-input i { font-size: 26px; color: #ccc; cursor: pointer; padding: 0 5px; transition: 0.3s; }
+        .star-input i.active { color: var(--accent); transform: scale(1.1); }
+        
+        .review-input-group input, .review-input-group textarea { 
+            width: 100%; padding: 15px; border-radius: 15px; border: 1.5px solid var(--card-border); 
+            margin-bottom: 15px; background: var(--white); color: var(--text); 
+            font-family: inherit; outline: none; transition: 0.3s; box-sizing: border-box;
+        }
+        .review-input-group input:focus, .review-input-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,77,64,0.05); }
 
-        /* --- Products --- */
+        .post-btn { 
+            background: var(--primary); color: white; border: none; padding: 16px; 
+            border-radius: 15px; cursor: pointer; font-weight: 700; width: 100%; 
+            font-size: 16px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .post-btn:hover { background: var(--accent); transform: translateY(-3px); }
+
+        #reviewList { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .review-card { 
+            background: var(--light); padding: 30px; border-radius: 25px; 
+            position: relative; animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); 
+            border-left: 5px solid var(--primary);
+        }
+        .review-card::before {
+            content: "\f10d"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 20px; right: 25px; font-size: 24px; color: var(--primary); opacity: 0.1;
+        }
+
+        .rev-user-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .user-avatar { 
+            width: 55px; height: 55px; 
+            background: linear-gradient(135deg, var(--primary), #00796b); 
+            color: white; border-radius: 50%; display: flex; align-items: center; 
+            justify-content: center; font-weight: 700; font-size: 20px;
+            box-shadow: 0 5px 15px rgba(0,77,64,0.2);
+        }
+        .rev-details strong { font-size: 18px; color: var(--text); display: block; }
+        .stars { color: var(--accent); font-size: 13px; margin-top: 3px; }
+        .review-card p { font-size: 15px; line-height: 1.8; color: var(--text); opacity: 0.9; margin: 0; font-style: italic; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Product Section & Footer --- */
         .container { max-width: 1200px; margin: 40px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 20px; }
-        .card { background: var(--white); border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); text-align: center; padding-bottom: 15px; }
+        .card { background: var(--white); border-radius: 15px; overflow: hidden; border: 1px solid var(--card-border); text-align: center; padding-bottom: 20px; transition: 0.3s;}
+        .card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .card img { width: 100%; height: 230px; object-fit: cover; }
-        .buy-btn { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; }
+        .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: 600; margin-top: 15px; transition: 0.3s;}
+        .buy-btn:hover { background: var(--accent); }
 
-        footer { background: var(--primary); color: white; padding: 40px 5%; margin-top: 50px; text-align: center; }
+        footer { background: var(--primary); color: white; padding: 50px 5% 30px; margin-top: 0; text-align: center; }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 10px 25px rgba(37,211,102,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-12px);} 60% {transform: translateY(-6px);} }
 
-        @media (max-width: 900px) { .review-container { grid-template-columns: 1fr; } .review-box { position: static; } }
+        @media (max-width: 1000px) { .review-container { grid-template-columns: 1fr; } .review-box { position: static; max-width: 500px; margin: 0 auto 50px; } }
     </style>
 </head>
 <body>
@@ -94,7 +142,7 @@
         <a href="index.html">Home</a>
         <a href="gadgets.html">Shop</a>
         <a href="contact.html">Contact</a>
-        <button id="modeBtn"><i class="fas fa-moon"></i></button>
+        <button id="modeBtn" title="Toggle Theme"><i class="fas fa-moon"></i></button>
     </div>
     <div style="display: flex; align-items: center;">
         <div class="search-container">
@@ -109,18 +157,19 @@
 
 <div class="hero">
     <div>
-        <h1>Modern Living,<br>Premium Decor.</h1>
-        <a href="gadgets.html" class="hero-btn">Explore Now</a>
+        <h1>Redefine Your Space<br>With Premium Decor.</h1>
+        <a href="gadgets.html" class="hero-btn">Shop Collection <i class="fas fa-arrow-right"></i></a>
     </div>
 </div>
 
-<h2 style="text-align:center; margin-top:50px; color:var(--primary)">Featured Products</h2>
+<h2 style="text-align:center; margin-top:60px; color:var(--primary); font-size: 32px;">Trending Now</h2>
 <div class="container" id="productList"></div>
 
 <section class="review-section">
     <div class="review-container">
         <div class="review-box">
-            <h2 style="color:var(--primary); margin-top:0;">Feedback</h2>
+            <h2>Your Feedback</h2>
+            <p>How was your experience with DecoTech?</p>
             <div class="star-input" id="starInput">
                 <i class="fa-solid fa-star" data-value="1"></i>
                 <i class="fa-solid fa-star" data-value="2"></i>
@@ -130,35 +179,45 @@
                 <input type="hidden" id="selectedRating" value="5">
             </div>
             <div class="review-input-group">
-                <input type="text" id="revName" placeholder="Your Name">
-                <textarea id="revText" placeholder="Share your experience..." rows="4"></textarea>
+                <input type="text" id="revName" placeholder="Full Name">
+                <textarea id="revText" placeholder="Write your review here..." rows="4"></textarea>
             </div>
-            <button class="post-btn" onclick="addReview()">Submit Review</button>
+            <button class="post-btn" onclick="addReview()">
+                Post Review <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
-        <div id="reviewList"></div>
+        <div id="reviewList">
+            </div>
     </div>
 </section>
 
+<a href="https://wa.me/8801778899326" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
 <footer>
-    <p>&copy; 2026 DecoTech Premium Store</p>
-    <div id="liveClock"></div>
+    <p>&copy; 2026 DecoTech Premium Store | Elevating Lifestyles</p>
+    <div id="liveClock" style="font-size: 13px; opacity: 0.7; margin-top: 10px;"></div>
 </footer>
 
 <script>
     const apiURL = 'https://decotech-api.onrender.com/api/products';
 
     window.onload = () => {
-        document.getElementById('preloader').style.display = 'none';
+        setTimeout(() => { document.getElementById('preloader').style.display = 'none'; }, 800);
         fetchProducts();
         updateCartCount();
-        displayReviews();
+        displayReviews(); // লোড হওয়ার সময় আগের রিভিউ দেখাবে
         initDarkMode();
     };
 
     // --- DARK MODE ---
     function initDarkMode() {
         const btn = document.getElementById('modeBtn');
-        if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode');
+        if(localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            btn.innerHTML = '<i class="fas fa-sun"></i>';
+        }
         btn.onclick = () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -167,7 +226,7 @@
         };
     }
 
-    // --- REVIEWS (LOCAL STORAGE) ---
+    // --- REVIEW SYSTEM (LOCALSTORAGE FOCUS) ---
     const stars = document.querySelectorAll('#starInput i');
     stars.forEach(s => {
         s.onclick = () => {
@@ -182,33 +241,53 @@
         const text = document.getElementById('revText').value.trim();
         const rating = document.getElementById('selectedRating').value;
 
-        if(!name || !text) return alert("Please fill all fields!");
+        if(!name || !text) {
+            showToast("⚠️ Please fill all fields!");
+            return;
+        }
 
-        const review = { name, text, rating, id: Date.now() };
-        let reviews = JSON.parse(localStorage.getItem('db_reviews')) || [];
-        reviews.unshift(review);
-        localStorage.setItem('db_reviews', JSON.stringify(reviews));
+        const newReview = { 
+            name, 
+            text, 
+            rating, 
+            id: Date.now(),
+            initials: name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0,2)
+        };
 
+        // LocalStorage এ সেভ করা
+        let reviews = JSON.parse(localStorage.getItem('decotech_reviews')) || [];
+        reviews.unshift(newReview);
+        localStorage.setItem('decotech_reviews', JSON.stringify(reviews));
+
+        // ফর্ম ক্লিয়ার করা
         document.getElementById('revName').value = '';
         document.getElementById('revText').value = '';
+        
         displayReviews();
-        showToast("Review Posted!");
+        showToast("✅ Review Posted Successfully!");
     }
 
     function displayReviews() {
-        const reviews = JSON.parse(localStorage.getItem('db_reviews')) || [];
-        document.getElementById('reviewList').innerHTML = reviews.map(r => `
+        const reviews = JSON.parse(localStorage.getItem('decotech_reviews')) || [];
+        const reviewList = document.getElementById('reviewList');
+        
+        if(reviews.length === 0) {
+            reviewList.innerHTML = '<div style="text-align:center; padding: 50px; opacity:0.5;"><h3>No reviews yet. Be the first to share your thoughts!</h3></div>';
+            return;
+        }
+
+        reviewList.innerHTML = reviews.map(r => `
             <div class="review-card">
                 <div class="rev-user-info">
-                    <div class="user-avatar">${r.name.charAt(0).toUpperCase()}</div>
-                    <div>
+                    <div class="user-avatar">${r.initials}</div>
+                    <div class="rev-details">
                         <strong>${r.name}</strong>
                         <div class="stars">${'<i class="fas fa-star"></i>'.repeat(r.rating)}</div>
                     </div>
                 </div>
                 <p>"${r.text}"</p>
             </div>
-        `).join('') || '<p style="opacity:0.5">No reviews yet.</p>';
+        `).join('');
     }
 
     // --- API & CART ---
@@ -218,13 +297,15 @@
             const data = await res.json();
             document.getElementById('productList').innerHTML = data.slice(0,8).map(p => `
                 <div class="card">
-                    <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/300'">
+                    <img src="${p.image || p.imageUrl}" onerror="this.src='https://placehold.co/400x300?text=Product'">
                     <h3>${p.name}</h3>
-                    <p style="color:var(--primary); font-weight:bold">৳ ${p.price}</p>
+                    <p style="color:var(--primary); font-weight:bold; font-size:18px;">৳ ${p.price}</p>
                     <button class="buy-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image || p.imageUrl}')">Add to Cart</button>
                 </div>
             `).join('');
-        } catch(e) { console.log("API Error"); }
+        } catch(e) { 
+            document.getElementById('productList').innerHTML = '<p>Error loading products.</p>';
+        }
     }
 
     function addToCart(name, price, image) {
@@ -232,7 +313,7 @@
         cart.push({name, price, image});
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
-        showToast("Added to Cart!");
+        showToast("🛒 Item added to cart!");
     }
 
     function updateCartCount() {
@@ -243,9 +324,9 @@
     function showToast(m) {
         const t = document.createElement('div');
         t.className = 'toast show';
-        t.innerHTML = `<i class="fa fa-check"></i> ${m}`;
+        t.innerHTML = m;
         document.getElementById('toast-container').appendChild(t);
-        setTimeout(() => t.remove(), 3000);
+        setTimeout(() => { t.classList.remove('show'); setTimeout(()=>t.remove(), 500); }, 3000);
     }
 
     function searchProduct() {
@@ -256,9 +337,11 @@
     }
 
     setInterval(() => {
-        document.getElementById('liveClock').innerText = new Date().toLocaleTimeString();
+        const now = new Date();
+        document.getElementById('liveClock').innerHTML = `<i class="fa fa-calendar-alt"></i> ${now.toLocaleDateString()} | <i class="fa fa-clock"></i> ${now.toLocaleTimeString()}`;
     }, 1000);
 
+    // Initial star highlight
     stars.forEach(s => s.classList.add('active'));
 </script>
 </body>
