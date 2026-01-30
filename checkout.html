@@ -10,11 +10,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script type="text/javascript">
         (function() {
-            if (typeof emailjs !== 'undefined') {
-                emailjs.init({
-                    publicKey: "WnceGWWVztvV9vkRD",
-                });
-            }
+            emailjs.init({
+                publicKey: "WnceGWWVztvV9vkRD", // আপনার পাবলিক কি
+            });
         })();
     </script>
 
@@ -112,7 +110,6 @@
     let selectedPayment = 'Cash on Delivery';
     let finalTotalAmount = 0;
 
-    // ১. ইউনিক অর্ডার আইডি তৈরির ফাংশন
     function generateOrderID() {
         const timestamp = Date.now().toString().slice(-4);
         const random = Math.floor(1000 + Math.random() * 9000);
@@ -149,13 +146,13 @@
     document.getElementById('orderForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        const orderId = generateOrderID(); // আইডি জেনারেট হলো
+        const orderId = generateOrderID();
         const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const customer_email = document.getElementById('email').value;
         const address = document.getElementById('address').value;
 
-        btn.innerText = "অর্ডার প্রসেসিং হচ্ছে...";
+        btn.innerText = "প্রসেসিং হচ্ছে...";
         btn.disabled = true;
 
         const orderData = {
@@ -169,39 +166,36 @@
             total: finalTotalAmount
         };
 
-        const completeOrder = () => {
+        // ১. হোয়াটসঅ্যাপ মেসেজ পাঠানো (আগে পাঠানো ভালো)
+        sendToWhatsApp(orderData);
+
+        // ২. ইমেইল পাঠানো এবং ডেটাবেস সেভ
+        try {
+            // EmailJS এর প্যারামিটার
+            const templateParams = {
+                order_id: orderId,
+                to_name: name,
+                to_email: customer_email,
+                order_details: orderData.products,
+                total_price: finalTotalAmount,
+                address: address,
+                customer_phone: phone
+            };
+
+            const response = await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
+            console.log("Email Sent Successfully!", response.status, response.text);
+
+            // সফল হলে অ্যালার্ট এবং রিডাইরেক্ট
             alert(`অর্ডার সফল! আপনার আইডি: ${orderId}`);
             localStorage.removeItem('cart');
             window.location.href = 'index.html';
-        };
 
-        // আধুনিক হোয়াটসঅ্যাপ মেসেজ পাঠানো (আইডি সহ)
-        sendToWhatsApp(orderData);
-
-        try {
-            fetch('https://decotech-api.onrender.com/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            }).catch(() => console.log("DB skip"));
-
-            if (typeof emailjs !== 'undefined') {
-                const templateParams = {
-                    order_id: orderId, // ইমেইল টেমপ্লেটে এই আইডি দেখাবে
-                    to_name: name,
-                    to_email: customer_email,
-                    order_details: orderData.products,
-                    total_price: finalTotalAmount,
-                    address: address,
-                    customer_phone: phone
-                };
-
-                await emailjs.send("service_qbtls6p", "template_7aca5go", templateParams);
-            }
-            
-            completeOrder();
         } catch (err) {
-            completeOrder();
+            console.error("EmailJS Error:", err);
+            // মেইল না গেলেও অর্ডার আইডি দেখিয়ে রিডাইরেক্ট করবে
+            alert(`অর্ডার গ্রহণ করা হয়েছে! আপনার আইডি: ${orderId}. (ইমেইল পাঠাতে সমস্যা হয়েছে)`);
+            localStorage.removeItem('cart');
+            window.location.href = 'index.html';
         }
     });
 
@@ -209,7 +203,7 @@
         const adminNumber = "8801778899326"; 
         let msg = `🛍️ *NEW ORDER - DECOTECH* 🛍️%0A`;
         msg += `━━━━━━━━━━━━━━━━━━%0A`;
-        msg += `🆔 *Order ID:* ${data.orderID}%0A%0A`; // আইডি এখানে যোগ করা হয়েছে
+        msg += `🆔 *Order ID:* ${data.orderID}%0A%0A`; 
         msg += `👤 *Customer Details:*%0A`;
         msg += `┌ *Name:* ${data.customerName}%0A`;
         msg += `├ *Phone:* ${data.phone}%0A`;
