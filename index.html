@@ -8,14 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        :root { --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; --white: #ffffff; --success: #2ecc71; --text: #333; }
-        
-        /* --- DARK MODE STYLES --- */
-        body.dark-mode { 
-            --light: #121212; --white: #1e1e1e; --text: #e0e0e0; --primary: #1de9b6; 
+        :root { 
+            --primary: #004d40; --accent: #ff9800; --light: #f4f7f6; 
+            --white: #ffffff; --success: #2ecc71; --text: #333;
+            --card-border: #eee;
         }
 
-        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--text); overflow-x: hidden; transition: 0.3s; }
+        /* --- DARK MODE SETTINGS --- */
+        body.dark-mode { 
+            --primary: #1de9b6; --light: #121212; --white: #1e1e1e; 
+            --text: #e0e0e0; --card-border: #333;
+        }
+
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: var(--text); overflow-x: hidden; transition: 0.3s ease; }
 
         /* --- PRO PRELOADER --- */
         #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
@@ -33,21 +38,17 @@
         .toast i { color: var(--success); font-size: 20px; }
 
         /* --- Navbar & Search --- */
-        nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav { background: var(--white); backdrop-filter: blur(10px); padding: 10px 5%; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; transition: 0.3s; }
         .logo { font-size: 26px; font-weight: 700; color: var(--primary); text-decoration: none; min-width: 150px; }
         .logo span { color: var(--accent); }
         .nav-links { display: flex; align-items: center; gap: 20px; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; font-size: 15px; }
         .nav-links a:hover { color: var(--accent); }
         
-        /* Dark Mode Toggle Button */
-        #modeBtn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 18px; margin-left: 15px; transition: 0.3s; }
-        #modeBtn:hover { color: var(--accent); }
-
         .dropdown { position: relative; display: inline-block; }
         .dropbtn { cursor: pointer; display: flex; align-items: center; gap: 5px; color: var(--text); }
         .dropdown-content { display: none; position: absolute; background-color: var(--white); min-width: 160px; box-shadow: 0px 8px 16px rgba(0,0,0,0.1); border-radius: 8px; z-index: 1; top: 100%; }
-        .dropdown-content a { color: var(--text); padding: 12px 16px; display: block; border-bottom: 1px solid #eee; margin: 0; }
+        .dropdown-content a { color: var(--text); padding: 12px 16px; display: block; border-bottom: 1px solid var(--card-border); margin: 0; }
         .dropdown-content a:hover { background-color: var(--light); border-radius: 8px; }
         .dropdown:hover .dropdown-content { display: block; }
         
@@ -56,52 +57,74 @@
         .search-container input:focus { width: 250px; border-color: var(--accent); }
         .search-container i { position: absolute; right: 12px; top: 10px; color: #888; cursor: pointer; }
 
+        /* Mode Switcher Button */
+        #modeBtn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 18px; margin-left: 15px; transition: 0.3s; display: flex; align-items: center; }
+
         /* --- Hero Banner --- */
         .hero { height: 550px; background: linear-gradient(135deg, rgba(0,77,64,0.85), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: flex-start; color: white; padding: 0 10%; position: relative; clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
         .hero h1 { font-size: 55px; margin: 0; line-height: 1.1; font-weight: 700; }
         .hero p { font-size: 20px; margin: 20px 0 30px; opacity: 0.9; }
         .hero-btn { background: var(--accent); color: white; padding: 15px 35px; border-radius: 30px; text-decoration: none; font-weight: 600; transition: 0.3s; box-shadow: 0 4px 15px rgba(255,152,0,0.4); display: inline-block; }
-        .hero-btn:hover { background: #e68900; transform: translateY(-3px); }
 
         /* --- Trust Badges --- */
-        .trust-badges { display: flex; justify-content: space-around; padding: 40px 5%; background: var(--white); margin: -30px auto 0; position: relative; z-index: 10; border-radius: 15px; max-width: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .trust-badges { display: flex; justify-content: space-around; padding: 40px 5%; background: var(--white); margin: -30px auto 40px; position: relative; z-index: 10; border-radius: 15px; max-width: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s; }
         .badge-item { text-align: center; }
         .badge-item i { font-size: 30px; color: var(--primary); margin-bottom: 10px; }
         .badge-item p { margin: 0; font-weight: 600; font-size: 14px; color: var(--text); }
         .badge-item span { font-size: 12px; color: #888; }
 
         /* --- Products Grid --- */
-        .section-title { text-align: center; margin: 80px 0 40px; font-size: 32px; color: var(--primary); }
+        .section-title { text-align: center; margin: 60px 0 40px; font-size: 32px; color: var(--primary); }
         .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 20px; }
-        .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; position: relative; }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card { background: var(--white); border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid var(--card-border); position: relative; }
+        .card:hover { transform: translateY(-10px); }
         .card img { width: 100%; height: 240px; object-fit: cover; transition: 0.5s; }
-        .card h3 { margin: 10px 0; font-size: 18px; color: var(--text); padding: 0 10px; }
+        .card h3 { margin: 15px 0 5px; font-size: 18px; color: var(--text); }
         .price { font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
         .buy-btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 30px; cursor: pointer; font-weight: 600; width: 90%; margin-bottom: 15px; transition: 0.3s; }
         .buy-btn:hover { background: var(--accent); }
 
-        /* --- CUSTOMER FEEDBACK (SUNDOR DESIGN) --- */
-        .review-section { padding: 60px 5%; background: var(--white); margin-top: 50px; border-radius: 30px 30px 0 0; }
-        .review-box { max-width: 600px; margin: 0 auto 50px; background: var(--light); padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .review-box textarea { width: 100%; padding: 15px; margin-top: 15px; border: 1px solid #ddd; border-radius: 10px; background: var(--white); color: var(--text); outline: none; resize: none; }
-        .star-input i { font-size: 24px; color: #ccc; cursor: pointer; transition: 0.2s; }
+        /* --- MODERN CUSTOMER FEEDBACK (UNIQUE) --- */
+        .review-section { padding: 80px 5%; background: var(--white); margin-top: 80px; border-radius: 50px 50px 0 0; transition: 0.3s; }
+        .review-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 350px 1fr; gap: 50px; align-items: start; }
+        .review-box { background: var(--light); padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: sticky; top: 120px; }
+        .review-box h2 { font-size: 24px; color: var(--primary); margin-bottom: 20px; text-align: center; }
+        .star-input { text-align: center; margin-bottom: 20px; }
+        .star-input i { font-size: 24px; color: #ccc; cursor: pointer; transition: 0.2s; padding: 0 3px; }
         .star-input i.active { color: var(--accent); }
-        .post-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; margin-top: 15px; width: 100%; transition: 0.3s; }
-        .post-btn:hover { background: var(--accent); transform: scale(1.02); }
         
-        #reviewList { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: auto; }
-        .review-card { background: var(--light); padding: 20px; border-radius: 15px; border-top: 4px solid var(--accent); box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+        .review-input-group { margin-bottom: 15px; }
+        .review-input-group input, .review-input-group textarea { width: 100%; padding: 12px; border: 1.5px solid transparent; border-radius: 12px; background: var(--white); color: var(--text); outline: none; transition: 0.3s; font-family: inherit; }
+        .review-input-group input:focus, .review-input-group textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(0,77,64,0.1); }
+        
+        .post-btn { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; transition: 0.3s; }
+        .post-btn:hover { background: var(--accent); transform: translateY(-2px); }
 
-        /* --- Floating WhatsApp & Footer --- */
-        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; }
+        #reviewList { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .review-card { background: var(--light); padding: 25px; border-radius: 20px; position: relative; transition: 0.3s; overflow: hidden; }
+        .review-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .review-card::after { content: "\f10d"; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; top: 15px; right: 20px; font-size: 30px; color: var(--primary); opacity: 0.05; }
+        
+        .rev-user-info { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .user-avatar { width: 50px; height: 50px; background: linear-gradient(45deg, var(--primary), var(--accent)); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+        .rev-details strong { display: block; font-size: 16px; color: var(--text); }
+        .rev-details .stars { color: var(--accent); font-size: 12px; }
+        .review-card p { font-size: 14px; line-height: 1.7; color: var(--text); opacity: 0.9; margin: 0; font-style: italic; }
+
+        @media (max-width: 900px) {
+            .review-container { grid-template-columns: 1fr; }
+            .review-box { position: static; }
+        }
+
+        /* --- Footer & Others --- */
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 2px 5px 15px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
 
-        footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 50px; }
+        footer { background: var(--primary); color: white; padding: 60px 5% 30px; margin-top: 0px; transition: 0.3s; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; }
         .footer-logo { font-size: 28px; font-weight: 700; color: white; text-decoration: none; display: block; margin-bottom: 15px; }
         .footer-logo span { color: var(--accent); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: 0.7; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -127,7 +150,7 @@
         </div>
         <a href="about.html">About</a>
         <a href="contact.html">Contact Us</a>
-        <button id="modeBtn"><i class="fas fa-moon"></i></button>
+        <button id="modeBtn" title="Toggle Dark/Light Mode"><i class="fas fa-moon"></i></button>
     </div>
     <div style="display: flex; align-items: center;">
         <div class="search-container">
@@ -161,24 +184,44 @@
 </div>
 
 <section class="review-section">
-    <h2 style="text-align: center; color: var(--primary); margin-bottom: 30px;">Customer Feedback</h2>
-    <div class="review-box">
-        <input type="text" id="revName" placeholder="Full Name" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; background: var(--white); color: var(--text);">
-        <div class="star-input" id="starInput" style="margin-top: 15px;">
-            <i class="fa-solid fa-star" data-value="1"></i>
-            <i class="fa-solid fa-star" data-value="2"></i>
-            <i class="fa-solid fa-star" data-value="3"></i>
-            <i class="fa-solid fa-star" data-value="4"></i>
-            <i class="fa-solid fa-star" data-value="5"></i>
-            <input type="hidden" id="selectedRating" value="5">
+    <div class="review-container">
+        <div class="review-box">
+            <h2>Customer Experience</h2>
+            <div class="star-input" id="starInput">
+                <i class="fa-solid fa-star" data-value="1"></i>
+                <i class="fa-solid fa-star" data-value="2"></i>
+                <i class="fa-solid fa-star" data-value="3"></i>
+                <i class="fa-solid fa-star" data-value="4"></i>
+                <i class="fa-solid fa-star" data-value="5"></i>
+                <input type="hidden" id="selectedRating" value="5">
+            </div>
+            <div class="review-input-group">
+                <input type="text" id="revName" placeholder="Enter Your Name">
+            </div>
+            <div class="review-input-group">
+                <textarea id="revText" placeholder="Write your feedback here..." rows="4"></textarea>
+            </div>
+            <button class="post-btn" onclick="addReview()">Post Review <i class="fas fa-paper-plane"></i></button>
         </div>
-        <textarea id="revText" placeholder="How was your experience with DecoTech?" rows="3"></textarea>
-        <button class="post-btn" onclick="addReview()">Submit Review</button>
+
+        <div id="reviewList">
+            <div class="review-card">
+                <div class="rev-user-info">
+                    <div class="user-avatar">AN</div>
+                    <div class="rev-details">
+                        <strong>Adnan Nayeem</strong>
+                        <div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    </div>
+                </div>
+                <p>"DecoTech gadgets are premium and aesthetic. Highly recommended for modern homes!"</p>
+            </div>
+        </div>
     </div>
-    <div id="reviewList"></div>
 </section>
 
-<a href="https://wa.me/8801778899326" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+<a href="https://wa.me/8801778899326" class="whatsapp-float" target="_blank">
+    <i class="fab fa-whatsapp"></i>
+</a>
 
 <footer>
     <div class="footer-grid">
@@ -186,20 +229,26 @@
             <a href="index.html" class="footer-logo">Deco<span>Tech</span></a>
             <p><i class="fa fa-map-marker-alt"></i> Level 4, Tech Plaza, Sherpur, Rajshahi, BD</p>
             <p><i class="fa fa-envelope"></i> support@decotech.com</p>
+            <div style="display:flex; gap:15px; margin-top:15px;">
+                <a href="#" style="color:white; font-size:18px;"><i class="fab fa-facebook"></i></a>
+                <a href="#" style="color:white; font-size:18px;"><i class="fab fa-instagram"></i></a>
+            </div>
         </div>
         <div>
             <h4>Quick Links</h4>
             <p><a href="gadgets.html" style="color:white; text-decoration:none; opacity:0.8;">Gadgets</a></p>
-            <p><a href="decor.html" style="color:white; text-decoration:none; opacity:0.8;">Home Decor</a></p>
+            <p><a href="decor.html" style="color:white; text-decoration:none; opacity:0.8;">Decor</a></p>
+            <p><a href="clothing.html" style="color:white; text-decoration:none; opacity:0.8;">Clothing</a></p>
         </div>
         <div>
-            <h4>Service Hours</h4>
-            <p style="opacity:0.8;">Sat - Thu: 10:00 AM - 08:00 PM</p>
+            <h4>Help</h4>
+            <p style="opacity:0.8;">Shipping Policy</p>
+            <p style="opacity:0.8;">Contact Us</p>
         </div>
     </div>
     <div class="footer-bottom">
         <div>&copy; 2026 DecoTech. All Rights Reserved.</div>
-        <div id="liveClock">Loading time...</div>
+        <div id="liveClock"><i class="fa fa-clock"></i> Loading...</div>
     </div>
 </footer>
 
@@ -283,7 +332,7 @@
         document.getElementById('cartCount').innerText = cart.reduce((acc, curr) => acc + curr.quantity, 0);
     }
 
-    // Star Rating logic
+    // Modern Star Rating Logic
     const stars = document.querySelectorAll('#starInput i');
     stars.forEach(star => {
         star.addEventListener('click', function() {
@@ -294,20 +343,32 @@
     });
 
     function addReview() {
-        const name = document.getElementById('revName').value;
-        const text = document.getElementById('revText').value;
+        const name = document.getElementById('revName').value.trim();
+        const text = document.getElementById('revText').value.trim();
         const rating = document.getElementById('selectedRating').value;
+        
         if(name && text) {
-            let starsStr = '<i class="fas fa-star" style="color:#ff9800"></i>'.repeat(rating);
+            let starsStr = '<i class="fas fa-star"></i>'.repeat(rating);
+            let avatar = name.substring(0, 2).toUpperCase();
+            
             const html = `
                 <div class="review-card">
-                    <div>${starsStr}</div>
-                    <strong style="display:block; margin:5px 0;">${name}</strong>
-                    <p style="margin:0; font-size:14px; opacity:0.8;">"${text}"</p>
+                    <div class="rev-user-info">
+                        <div class="user-avatar">${avatar}</div>
+                        <div class="rev-details">
+                            <strong>${name}</strong>
+                            <div class="stars">${starsStr}</div>
+                        </div>
+                    </div>
+                    <p>"${text}"</p>
                 </div>`;
+            
             document.getElementById('reviewList').insertAdjacentHTML('afterbegin', html);
-            document.getElementById('revName').value = ''; document.getElementById('revText').value = '';
-            showToast("Review submitted!");
+            document.getElementById('revName').value = ''; 
+            document.getElementById('revText').value = '';
+            showToast("Feedback submitted!");
+        } else {
+            alert("Please provide both name and feedback.");
         }
     }
 
@@ -320,7 +381,7 @@
     fetchProducts();
     updateCartCount();
     updateClock();
-    stars.forEach(s => s.classList.add('active'));
+    stars.forEach(s => s.classList.add('active')); // default 5 star highlight
 </script>
 </body>
 </html>
